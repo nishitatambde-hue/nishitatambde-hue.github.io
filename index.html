@@ -1,492 +1,1424 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ankit Panicker – Automation Engineer | AI | TTS | STT | Python</title>
+  <meta charset="UTF-8" />
+  <title>Ankit Panicker — AI Automation & Voice Systems</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-/* ------------------------------------
-   GLOBAL VARIABLES (THEME)
------------------------------------- */
-:root {
-  --accent: #22d3ee;
-  --accent-strong: #0ea5e9;
-  --accent-soft: rgba(34, 211, 238, 0.28);
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-soft: #020617;
+      --fg: #f9fafb;
+      --fg-soft: #e5e7eb;
+      --fg-muted: #9ca3af;
 
-  --text: #e5e5e5;
-  --text-soft: #bdbdbd;
-  --matte: #050505;
+      --accent: #22d3ee;
+      --accent-strong: #0ea5e9;
+      --accent-soft: rgba(34, 211, 238, 0.35);
 
-  --glass: rgba(255,255,255,0.08);
-  --glass-border: rgba(255,255,255,0.15);
-}
+      --glass-bg: rgba(15, 23, 42, 0.88);
+      --glass-border: rgba(148, 163, 184, 0.5);
+    }
 
-/* ORANGE THEME */
-body.theme-orange {
-  --accent: #fbbf24;
-  --accent-strong: #f59e0b;
-  --accent-soft: rgba(251, 191, 36, 0.25);
-}
+    body.theme-orange {
+      --accent: #fbbf24;
+      --accent-strong: #f59e0b;
+      --accent-soft: rgba(251, 191, 36, 0.35);
+    }
 
-body {
-  margin: 0;
-  background: var(--matte);
-  font-family: "Inter", sans-serif;
-  color: var(--text);
-  overflow-x: hidden;
-}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-/* ------------------------------------
-   MATTE BACKGROUND WITH 3D CUBES
------------------------------------- */
-.bg-cubes {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -10;
-  overflow: hidden;
-}
+    html, body {
+      height: 100%;
+    }
 
-.cube {
-  position: absolute;
-  width: 120px;
-  height: 120px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.05);
-  box-shadow: inset 0 0 25px rgba(255,255,255,0.03);
-  transform-style: preserve-3d;
-  animation: floatCube 14s infinite ease-in-out;
-  filter: blur(1px);
-  border-radius: 12px;
-}
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #020617 0, #020617 40%, #000 100%);
+      color: var(--fg);
+      overflow-x: hidden;
+    }
 
-@keyframes floatCube {
-  0% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
-  50% { transform: translateY(-80px) rotateX(25deg) rotateY(15deg); }
-  100% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
-}
+    a { color: inherit; text-decoration: none; }
 
-/* ------------------------------------
-   GLASS DROPLETS (VisionOS Style)
------------------------------------- */
-.droplet {
-  position: absolute;
-  background: rgba(255,255,255,0.17);
-  backdrop-filter: blur(22px) saturate(180%);
-  border-radius: 999px;
-  box-shadow: 0 0 35px rgba(255,255,255,0.08),
-              inset 0 0 10px rgba(255,255,255,0.25);
-}
+    .page {
+      min-height: 100vh;
+      position: relative;
+      z-index: 2;
+    }
 
-.d-large { width: 140px; height: 140px; top: 140px; left: 12%; }
-.d-mid { width: 90px; height: 90px; top: 300px; left: 45%; }
-.d-small { width: 55px; height: 55px; top: 520px; left: 70%; }
+    .container {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 1.4rem;
+    }
 
-/* ------------------------------------
-   GLASS BUBBLE THEME TOGGLE (III)
------------------------------------- */
-.theme-toggle {
-  position: fixed;
-  top: 24px;
-  right: 24px;
-  width: 120px;
-  height: 50px;
-  background: rgba(255,255,255,0.12);
-  border-radius: 999px;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  border: 1px solid rgba(255,255,255,0.2);
-  backdrop-filter: blur(18px);
-  cursor: pointer;
-  transition: 0.4s ease;
-}
+    /* BACKGROUND DROPS */
 
-.theme-toggle .knob {
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.25));
-  box-shadow: 0 4px 22px rgba(0,0,0,0.4), inset 0 0 10px rgba(255,255,255,0.4);
-  transition: 0.4s ease;
-  transform: translateX(0);
-}
+    .bg-drop {
+      position: fixed;
+      border-radius: 999px;
+      filter: blur(40px);
+      opacity: 0.45;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-body.theme-orange .knob {
-  transform: translateX(68px);
-}
+    .bg-drop-1 {
+      width: 360px;
+      height: 360px;
+      background: radial-gradient(circle, rgba(34, 211, 238, 0.3), transparent 60%);
+      top: -60px;
+      left: -40px;
+    }
 
-.theme-toggle:hover {
-  box-shadow: 0 0 22px var(--accent-soft);
-}
+    .bg-drop-2 {
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(15, 118, 110, 0.4), transparent 60%);
+      top: 40%;
+      right: -80px;
+    }
 
-/* ------------------------------------
-   NAVBAR
------------------------------------- */
-nav {
-  width: 100%;
-  padding: 24px 60px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  backdrop-filter: blur(14px);
-  background: rgba(0,0,0,0.4);
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
+    .bg-drop-3 {
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.35), transparent 60%);
+      bottom: -60px;
+      left: 20%;
+    }
 
-.logo {
-  font-size: 1.3rem;
-  font-weight: 600;
-  background: linear-gradient(135deg, white, var(--accent));
-  -webkit-background-clip: text;
-  color: transparent;
-}
+    /* CURSOR */
 
-nav a {
-  color: var(--text-soft);
-  text-decoration: none;
-  margin: 0 18px;
-  font-size: 0.95rem;
-}
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
 
-/* ------------------------------------
-   HERO SECTION
------------------------------------- */
-.hero {
-  padding: 160px 60px 120px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+    .cursor-ring {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: 2px solid var(--accent-soft);
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.16s ease-out, border-color 0.16s ease-out, opacity 0.16s ease-out;
+      opacity: 0.7;
+    }
 
-.hero-text {
-  width: 50%;
-}
+    /* NAVBAR */
 
-.hero-title {
-  font-size: 3.4rem;
-  line-height: 1.2;
-  font-weight: 700;
-  color: white;
-}
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.6), transparent);
+      border-bottom: 1px solid rgba(15,23,42,0.9);
+    }
 
-.hero-title span {
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  -webkit-background-clip: text;
-  color: transparent;
-}
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 0;
+      gap: 1rem;
+    }
 
-.hero-sub {
-  margin-top: 20px;
-  font-size: 1.1rem;
-  color: var(--text-soft);
-  line-height: 1.6;
-}
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
 
-.hero-btn {
-  margin-top: 32px;
-  padding: 16px 32px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: black;
-  font-weight: 600;
-  border-radius: 14px;
-  border: none;
-  cursor: pointer;
-  font-size: 1.05rem;
-}
+    .logo-orb {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      padding: 2px;
+      background: radial-gradient(circle at 30% 20%, #e5f3ff, #020617);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.95),
+        0 0 18px var(--accent-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-.hero-img {
-  width: 42%;
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 24px;
-  backdrop-filter: blur(18px);
-  padding: 20px;
-  box-shadow: 0 0 32px rgba(0,0,0,0.4);
-}
+    .logo-orb-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: radial-gradient(circle at 30% 20%, #f9fafb, #020617);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #0f172a;
+    }
 
-.hero-img img {
-  width: 100%;
-  border-radius: 16px;
-}
+    .logo-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.12rem;
+    }
 
-/* MORE CSS IN PART 2… */
+    .logo-main {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
 
-</style>
+    .logo-sub {
+      font-size: 0.7rem;
+      color: var(--fg-muted);
+    }
+
+    .nav-center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+    }
+
+    .nav-links a {
+      position: relative;
+      padding-block: 0.24rem;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.2s ease-out;
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* TOGGLE (Cyan / Orange) */
+
+    .theme-toggle-shell {
+      position: relative;
+      width: 64px;
+      height: 28px;
+      border-radius: 999px;
+      padding: 3px;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.16), transparent 60%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(3, 7, 18, 0.98));
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 1),
+        0 16px 32px rgba(0, 0, 0, 1);
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      cursor: pointer;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    .theme-toggle-knob {
+      position: relative;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 30% 20%, #ffffff, #dbeafe 55%, #020617 100%);
+      box-shadow:
+        0 6px 16px rgba(0, 0, 0, 1),
+        0 0 18px var(--accent-soft);
+      transform: translateX(0);
+      transition:
+        transform 0.24s ease-out,
+        box-shadow 0.24s ease-out,
+        background 0.24s ease-out;
+    }
+
+    body.theme-orange .theme-toggle-knob {
+      transform: translateX(32px);
+      background:
+        radial-gradient(circle at 30% 20%, #fff7ed, #fed7aa 55%, #020617 100%);
+    }
+
+    .btn {
+      border-radius: 999px;
+      padding: 0.7rem 1.5rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      transition:
+        transform 0.16s ease-out,
+        box-shadow 0.16s ease-out,
+        border-color 0.16s ease-out,
+        background 0.16s ease-out;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      color: #020617;
+      background:
+        radial-gradient(circle at 0 0, rgba(248, 250, 252, 0.18), transparent 55%),
+        linear-gradient(90deg, var(--accent), var(--accent-strong));
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 1),
+        0 0 26px var(--accent-soft);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 1),
+        0 0 36px var(--accent-soft);
+    }
+
+    .btn-ghost {
+      color: var(--fg-soft);
+      background: rgba(0, 0, 0, 0.85);
+      border-color: rgba(31, 41, 55, 0.95);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--accent-soft);
+      box-shadow: 0 0 16px var(--accent-soft);
+      transform: translateY(-1px);
+    }
+
+    /* HERO */
+
+    .hero {
+      padding: 3.4rem 0 4.3rem;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.26rem 0.6rem 0.26rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: rgba(0, 0, 0, 0.86);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+    }
+
+    .hero-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--accent), var(--accent-strong));
+      box-shadow: 0 0 12px var(--accent-strong);
+    }
+
+    .hero-title {
+      margin-top: 1.5rem;
+      font-size: clamp(2.5rem, 4vw, 3.4rem);
+      line-height: 1.04;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-title span {
+      background: linear-gradient(
+        135deg,
+        #f9fafb,
+        var(--accent),
+        var(--accent-strong)
+      );
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      margin-top: 1rem;
+      max-width: 32rem;
+      font-size: 0.96rem;
+      color: var(--fg-muted);
+    }
+
+    .hero-actions {
+      margin-top: 1.7rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      align-items: center;
+    }
+
+    .hero-meta {
+      margin-top: 1.4rem;
+      font-size: 0.8rem;
+      color: var(--fg-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .hero-meta-pill {
+      padding: 0.25rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: rgba(0, 0, 0, 0.88);
+    }
+
+    .hero-meta-strong {
+      color: var(--fg-soft);
+      font-weight: 500;
+    }
+
+    .hero-cli-chip {
+      margin-top: 1.8rem;
+      border-radius: 18px;
+      padding: 0.8rem 0.9rem;
+      background:
+        radial-gradient(circle at 0 0, rgba(148, 163, 184, 0.22), transparent 55%),
+        rgba(0, 0, 0, 0.92);
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      box-shadow:
+        0 16px 36px rgba(0, 0, 0, 0.96),
+        0 0 24px var(--accent-soft);
+      font-size: 0.8rem;
+      max-width: 20rem;
+    }
+
+    .hero-cli-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--fg-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .hero-cli-main {
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+
+    .hero-cli-sub {
+      color: var(--fg-muted);
+    }
+
+    /* HERO RIGHT PANEL */
+
+    .hero-panel-wrap {
+      border-radius: 26px;
+      padding: 1px;
+      background:
+        radial-gradient(circle at 0 0, rgba(148, 163, 184, 0.3), transparent 60%),
+        linear-gradient(145deg, rgba(148, 163, 184, 0.65), rgba(51, 65, 85, 0.6), rgba(15, 23, 42, 0.95));
+      box-shadow:
+        0 26px 70px rgba(0, 0, 0, 0.96),
+        0 0 40px rgba(0, 0, 0, 1);
+    }
+
+    .hero-panel {
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 10% 0, rgba(255, 255, 255, 0.16), transparent 55%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.98), #020617);
+      backdrop-filter: blur(24px) saturate(170%);
+      -webkit-backdrop-filter: blur(24px) saturate(170%);
+      border: 1px solid rgba(249, 250, 251, 0.18);
+      padding: 1.3rem 1.25rem 1.6rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      color: var(--fg-muted);
+      margin-bottom: 1rem;
+    }
+
+    .hero-panel-title {
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .hero-panel-status {
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(0, 0, 0, 0.86);
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .hero-panel-status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--accent), var(--accent-strong));
+      box-shadow: 0 0 10px var(--accent-strong);
+    }
+
+    .hero-panel-main {
+      display: grid;
+      grid-template-columns: 3fr 2.1fr;
+      gap: 1.2rem;
+      align-items: center;
+    }
+
+    .hero-graph {
+      position: relative;
+      height: 170px;
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at 0 0, rgba(148, 163, 184, 0.22), transparent 60%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.98), #020617);
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      overflow: hidden;
+    }
+
+    .hero-graph::before,
+    .hero-graph::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      mix-blend-mode: screen;
+      background-image: linear-gradient(
+        120deg,
+        var(--accent),
+        var(--accent-strong)
+      );
+      filter: blur(1px);
+    }
+
+    .hero-graph::before {
+      opacity: 0.9;
+      animation: graphWaveA 9s ease-in-out infinite;
+    }
+
+    .hero-graph::after {
+      opacity: 0.55;
+      animation: graphWaveB 13s ease-in-out infinite;
+    }
+
+    @keyframes graphWaveA {
+      0% {
+        clip-path: polygon(0 70%, 20% 55%, 40% 72%, 60% 48%, 80% 70%, 100% 52%, 100% 100%, 0 100%);
+      }
+      50% {
+        clip-path: polygon(0 58%, 20% 72%, 40% 48%, 60% 70%, 80% 52%, 100% 68%, 100% 100%, 0 100%);
+      }
+      100% {
+        clip-path: polygon(0 70%, 20% 55%, 40% 72%, 60% 48%, 80% 70%, 100% 52%, 100% 100%, 0 100%);
+      }
+    }
+
+    @keyframes graphWaveB {
+      0% {
+        clip-path: polygon(0 50%, 18% 70%, 37% 45%, 55% 70%, 72% 52%, 100% 65%, 100% 100%, 0 100%);
+      }
+      50% {
+        clip-path: polygon(0 68%, 18% 45%, 37% 72%, 55% 48%, 72% 68%, 100% 50%, 100% 100%, 0 100%);
+      }
+      100% {
+        clip-path: polygon(0 50%, 18% 70%, 37% 45%, 55% 70%, 72% 52%, 100% 65%, 100% 100%, 0 100%);
+      }
+    }
+
+    .hero-metrics {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      font-size: 0.8rem;
+    }
+
+    .metric-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.85rem;
+    }
+
+    .metric-label {
+      color: var(--fg-muted);
+      font-size: 0.76rem;
+    }
+
+    .metric-value {
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    .metric-pill {
+      font-size: 0.7rem;
+      padding: 0.14rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid var(--accent-soft);
+      color: var(--accent);
+      margin-left: 0.3rem;
+    }
+
+    /* SECTION BASE */
+
+    section {
+      padding: 3.4rem 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 540px;
+      margin: 0 auto 2.1rem;
+    }
+
+    .eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .section-title {
+      font-size: 1.7rem;
+      letter-spacing: -0.03em;
+    }
+
+    .section-title span {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .section-subtitle {
+      margin-top: 0.6rem;
+      font-size: 0.9rem;
+      color: var(--fg-muted);
+    }
+
+    /* STACK TAG STRIP */
+
+    .stack-strip {
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.96);
+      background:
+        radial-gradient(circle at 0 0, rgba(15, 23, 42, 0.9), transparent 70%),
+        rgba(3, 7, 18, 0.95);
+      padding: 0.9rem 1.7rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.1rem;
+      font-size: 0.8rem;
+      color: var(--fg-muted);
+      box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.9),
+        0 0 30px rgba(15, 23, 42, 0.9);
+    }
+
+    .stack-label {
+      font-weight: 500;
+      color: var(--fg-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.72rem;
+    }
+
+    .stack-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+    }
+
+    .stack-tag {
+      padding: 0.24rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(15, 23, 42, 0.95);
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--fg-soft);
+      cursor: default;
+      transition: transform 0.16s ease-out, box-shadow 0.16s ease-out, border-color 0.16s ease-out;
+    }
+
+    .stack-tag:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 18px var(--accent-soft);
+      border-color: var(--accent);
+    }
+
+    /* GLASS CARDS */
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.7rem;
+    }
+
+    .glass-card {
+      position: relative;
+      border-radius: 20px;
+      padding: 1.25rem 1.2rem 1.4rem;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.15), transparent 55%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(0, 0, 0, 0.98));
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.98),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+      overflow: hidden;
+      transform-style: preserve-3d;
+      transform: translateZ(0);
+      transition:
+        transform 0.4s ease,
+        box-shadow 0.4s ease,
+        border-color 0.3s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-10px) rotateX(4deg) rotateY(-3deg);
+      box-shadow:
+        0 26px 60px rgba(0, 0, 0, 1),
+        0 0 30px var(--accent-soft);
+      border-color: rgba(249, 250, 251, 0.24);
+    }
+
+    .glass-card > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .glass-blob {
+      position: absolute;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.9), rgba(148, 163, 184, 0.4), rgba(15, 23, 42, 0.9));
+      box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.9),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .glass-blob::after {
+      content: "";
+      position: absolute;
+      width: 55%;
+      height: 55%;
+      top: 12%;
+      left: 18%;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.95), transparent 60%);
+      mix-blend-mode: screen;
+    }
+
+    .blob-a { width: 22px; height: 22px; top: 16px; left: 24px; }
+    .blob-b { width: 14px; height: 14px; top: 60px; left: 70px; }
+    .blob-c { width: 24px; height: 24px; bottom: 20px; right: 26px; }
+
+    .card-img {
+      width: 100%;
+      border-radius: 14px;
+      margin-bottom: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 0 18px rgba(0,0,0,0.7);
+      object-fit: cover;
+    }
+
+    .card-kicker {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--fg-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .card-title {
+      font-size: 1.06rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #f9fafb, var(--accent-strong));
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 0.45rem;
+    }
+
+    .card-body {
+      font-size: 0.86rem;
+      color: var(--fg-muted);
+      margin-bottom: 0.9rem;
+    }
+
+    .card-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.7rem;
+      font-size: 0.78rem;
+      color: var(--fg-muted);
+    }
+
+    .card-tag {
+      padding: 0.22rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(0, 0, 0, 0.92);
+      color: var(--accent);
+    }
+
+    /* STATS GRID */
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+
+    .stat-card {
+      border-radius: 18px;
+      padding: 1.1rem 1.1rem;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.16), transparent 60%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(0, 0, 0, 0.98));
+      border: 1px solid rgba(31, 41, 55, 0.98);
+      box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.98),
+        0 0 24px rgba(0, 0, 0, 1);
+      font-size: 0.84rem;
+      color: var(--fg-muted);
+    }
+
+    .stat-label {
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-value {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 0.1rem;
+      color: var(--fg-soft);
+    }
+
+    /* CTA / CONTACT */
+
+    .cta-section {
+      padding: 4rem 0 4.6rem;
+    }
+
+    .cta-box {
+      border-radius: 26px;
+      padding: 2.4rem 2.1rem 2.3rem;
+      background:
+        radial-gradient(circle at 0 0, var(--accent-soft), transparent 64%),
+        linear-gradient(145deg, rgba(0, 0, 0, 0.98), rgba(15, 23, 42, 0.98));
+      border: 1px solid rgba(249, 250, 251, 0.18);
+      box-shadow:
+        0 30px 70px rgba(0, 0, 0, 1),
+        0 0 34px var(--accent-soft);
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .cta-title {
+      font-size: 1.7rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .cta-text {
+      font-size: 0.9rem;
+      color: var(--fg-muted);
+      max-width: 460px;
+      margin: 0 auto 1.6rem;
+    }
+
+    .contact-card {
+      margin-top: 2.1rem;
+      border-radius: 20px;
+      padding: 1.4rem 1.3rem;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.16), transparent 60%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(0, 0, 0, 0.98));
+      border: 1px solid rgba(31, 41, 55, 0.98);
+      box-shadow:
+        0 18px 45px rgba(0, 0, 0, 1),
+        0 0 24px rgba(0, 0, 0, 1);
+      font-size: 0.86rem;
+      color: var(--fg-muted);
+      text-align: left;
+    }
+
+    /* FOOTER */
+
+    footer {
+      padding: 1.7rem 0 2.3rem;
+      border-top: 1px solid rgba(15, 23, 42, 0.95);
+      font-size: 0.78rem;
+      color: var(--fg-muted);
+      backdrop-filter: blur(18px);
+      background: linear-gradient(
+        to top,
+        rgba(3, 7, 18, 0.96),
+        rgba(3, 7, 18, 0.9),
+        transparent
+      );
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* REVEAL */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition:
+        opacity 0.6s ease-out,
+        transform 0.6s ease-out;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 1024px) {
+      .hero-inner {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .hero-panel-wrap {
+        max-width: 420px;
+        margin: 2.2rem auto 0;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 840px) {
+      .features-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-center {
+        display: none;
+      }
+      .hero {
+        padding-top: 2.6rem;
+      }
+      .stack-strip {
+        border-radius: 24px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .features-grid,
+      .stats-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .cta-box {
+        padding: 2rem 1.6rem;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <!-- Cursor elements -->
+  <div class="cursor-dot"></div>
+  <div class="cursor-ring"></div>
 
-<!-- 3D CUBES BACKGROUND -->
-<div class="bg-cubes">
-  <div class="cube" style="top:10%; left:15%;"></div>
-  <div class="cube" style="top:45%; left:60%; animation-delay:2s;"></div>
-  <div class="cube" style="top:70%; left:30%; animation-delay:4s;"></div>
-</div>
+  <!-- background drops -->
+  <div class="bg-drop bg-drop-1"></div>
+  <div class="bg-drop bg-drop-2"></div>
+  <div class="bg-drop bg-drop-3"></div>
 
-<!-- DROPLETS -->
-<div class="droplet d-large"></div>
-<div class="droplet d-mid"></div>
-<div class="droplet d-small"></div>
+  <div class="page">
+    <!-- HEADER -->
+    <header>
+      <div class="container">
+        <nav class="nav">
+          <div class="nav-left">
+            <div class="logo-orb">
+              <div class="logo-orb-inner">A</div>
+            </div>
+            <div class="logo-block">
+              <div class="logo-main">ANKIT PANICKER</div>
+              <div class="logo-sub">AI · Automation · Voice Systems</div>
+            </div>
+          </div>
 
-<!-- THEME TOGGLE -->
-<div class="theme-toggle" onclick="toggleTheme()">
-  <div class="knob"></div>
-</div>
+          <div class="nav-center">
+            <div class="nav-links">
+              <a href="#hero">Overview</a>
+              <a href="#automations">Automations</a>
+              <a href="#stats">Stats</a>
+              <a href="#cta">Contact</a>
+            </div>
+          </div>
 
-<!-- NAVBAR -->
-<nav>
-  <div class="logo">Ankit Panicker</div>
-  <div class="nav-links">
-    <a href="#automations">Automations</a>
-    <a href="#projects">Projects</a>
-    <a href="#services">Services</a>
-    <a href="#contact">Contact</a>
+          <div class="nav-right">
+            <div class="theme-toggle-shell" id="theme-toggle">
+              <div class="theme-toggle-knob"></div>
+            </div>
+            <a href="mailto:ankypanicker@gmail.com">
+              <button class="btn btn-primary">Contact me</button>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <main>
+      <section class="hero" id="hero">
+        <div class="container">
+          <div class="hero-inner">
+            <div class="hero-left reveal">
+              <div class="hero-pill">
+                <span class="hero-dot"></span>
+                AI · AUTOMATION · AUDIO
+              </div>
+
+              <h1 class="hero-title">
+                I build <span>bold automation systems</span>
+                for audio, video & code.
+              </h1>
+
+              <p class="hero-subtitle">
+                I’m <strong>Ankit Panicker</strong> — I design and code end‑to‑end pipelines:
+                voice cloning, TTS, STT, subtitle generators, YouTube video automations,
+                and daily systems wired in Python with clean UI and backend glue.
+              </p>
+
+              <div class="hero-actions">
+                <a href="https://github.com/ankypanicker" target="_blank" rel="noreferrer">
+                  <button class="btn btn-primary">View GitHub</button>
+                </a>
+                <a href="#automations">
+                  <button class="btn btn-ghost">See my automations</button>
+                </a>
+              </div>
+
+              <div class="hero-meta">
+                <span class="hero-meta-pill">
+                  <span class="hero-meta-strong">5+ full automation pipelines</span>
+                </span>
+                <span>Voice clone · TTS · STT · subtitles · daily quotes · APIs.</span>
+              </div>
+
+              <div class="hero-cli-chip">
+                <div class="hero-cli-title">CLI</div>
+                <div class="hero-cli-main">Dark terminal, frosted UI, clean logs.</div>
+                <div class="hero-cli-sub">
+                  I care about chunking, progress bars, retries and structure, so your tools
+                  feel safe to run every day.
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-right reveal">
+              <div class="hero-panel-wrap">
+                <div class="hero-panel">
+                  <div class="hero-panel-header">
+                    <div class="hero-panel-title">
+                      RUNTIME · AUTOMATION HUD
+                    </div>
+                    <div class="hero-panel-status">
+                      <span class="hero-panel-status-dot"></span>
+                      pipelines_active · TRUE
+                    </div>
+                  </div>
+
+                  <div class="hero-panel-main">
+                    <div class="hero-graph"></div>
+                    <div class="hero-metrics">
+                      <div class="metric-row">
+                        <span class="metric-label">Voice pipelines</span>
+                        <span class="metric-value">
+                          Clone + TTS
+                          <span class="metric-pill">XTTS stack</span>
+                        </span>
+                      </div>
+                      <div class="metric-row">
+                        <span class="metric-label">Text ↔ Audio</span>
+                        <span class="metric-value">TTS · STT · subtitles</span>
+                      </div>
+                      <div class="metric-row">
+                        <span class="metric-label">Automation style</span>
+                        <span class="metric-value">CLI + Python + APIs</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STACK STRIP -->
+      <section>
+        <div class="container reveal">
+          <div class="stack-strip">
+            <div class="stack-label">Stack I like to automate</div>
+            <div class="stack-tags">
+              <span class="stack-tag">Python</span>
+              <span class="stack-tag">XTTS · TTS</span>
+              <span class="stack-tag">Whisper STT</span>
+              <span class="stack-tag">FFmpeg</span>
+              <span class="stack-tag">CLI tools</span>
+              <span class="stack-tag">APIs</span>
+              <span class="stack-tag">YouTube flows</span>
+              <span class="stack-tag">Automation scripts</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AUTOMATIONS -->
+      <section id="automations">
+        <div class="container">
+          <div class="section-header reveal">
+            <div class="eyebrow">Automations</div>
+            <h2 class="section-title">
+              Systems I’ve <span>wired and shipped.</span>
+            </h2>
+            <p class="section-subtitle">
+              Not just random scripts — full pipelines that go from raw input to finished assets
+              with zero manual clicking in the middle.
+            </p>
+          </div>
+
+          <div class="features-grid">
+            <!-- CARD 1 -->
+            <article class="glass-card reveal">
+              <div class="glass-blob blob-a"></div>
+              <div class="glass-blob blob-b"></div>
+              <div class="glass-blob blob-c"></div>
+              <img class="card-img" src="https://raw.githubusercontent.com/nishitatambde-hue/nishitatambde-hue.github.io/main/Screenshot%202025-12-06%20005907.png" alt="Automation preview">
+              <div class="card-kicker">Pipeline · 01</div>
+              <h3 class="card-title">Voice Clone Automation</h3>
+              <p class="card-body">
+                XTTS-based voice clone pipeline with 40+40 chunking, echo, volume boost,
+                noise handling and automatic merge — built to handle long-form content.
+              </p>
+              <div class="card-meta-row">
+                <span class="card-tag">XTTS · batching</span>
+                <span>CLI + Python</span>
+              </div>
+            </article>
+
+            <!-- CARD 2 -->
+            <article class="glass-card reveal">
+              <div class="glass-blob blob-a"></div>
+              <div class="glass-blob blob-b"></div>
+              <div class="glass-blob blob-c"></div>
+              <div class="card-kicker">Pipeline · 02</div>
+              <h3 class="card-title">Full TTS Engine</h3>
+              <p class="card-body">
+                End‑to‑end TTS engine with progress bars, structured logs, safe retries
+                and smart text cleaning, ready for YouTube videos, podcasts and shorts.
+              </p>
+              <div class="card-meta-row">
+                <span class="card-tag">Long‑form audio</span>
+                <span>Robust & repeatable</span>
+              </div>
+            </article>
+
+            <!-- CARD 3 -->
+            <article class="glass-card reveal">
+              <div class="glass-blob blob-a"></div>
+              <div class="glass-blob blob-b"></div>
+              <div class="glass-blob blob-c"></div>
+              <div class="card-kicker">Pipeline · 03</div>
+              <h3 class="card-title">STT + Subtitle Generator</h3>
+              <p class="card-body">
+                Speech‑to‑text pipeline that creates clean subtitles: timing, splitting,
+                formatting and .srt/.vtt export, ready to burn into any video.
+              </p>
+              <div class="card-meta-row">
+                <span class="card-tag">Whisper · SRT</span>
+                <span>Auto timing & layout</span>
+              </div>
+            </article>
+
+            <!-- CARD 4 -->
+            <article class="glass-card reveal">
+              <div class="glass-blob blob-a"></div>
+              <div class="glass-blob blob-b"></div>
+              <div class="glass-blob blob-c"></div>
+              <div class="card-kicker">Pipeline · 04</div>
+              <h3 class="card-title">YouTube Auto Video Generator</h3>
+              <p class="card-body">
+                Script → AI voice → subtitles → FFmpeg visuals → rendered video.
+                A faceless YouTube engine built for fully automated content.
+              </p>
+              <div class="card-meta-row">
+                <span class="card-tag">Video automation</span>
+                <span>Faceless channels</span>
+              </div>
+            </article>
+
+            <!-- CARD 5 -->
+            <article class="glass-card reveal">
+              <div class="glass-blob blob-a"></div>
+              <div class="glass-blob blob-b"></div>
+              <div class="glass-blob blob-c"></div>
+              <div class="card-kicker">Pipeline · 05</div>
+              <h3 class="card-title">Python Automation Tools</h3>
+              <p class="card-body">
+                CLI tools for batch processing, file management, data clean‑up,
+                and automation around APIs — built with config files and sane defaults.
+              </p>
+              <div class="card-meta-row">
+                <span class="card-tag">CLI · logging</span>
+                <span>Batch & config‑based</span>
+              </div>
+            </article>
+
+            <!-- CARD 6 -->
+            <article class="glass-card reveal">
+              <div class="glass-blob blob-a"></div>
+              <div class="glass-blob blob-b"></div>
+              <div class="glass-blob blob-c"></div>
+              <div class="card-kicker">Pipeline · 06</div>
+              <h3 class="card-title">UI + Backend Systems</h3>
+              <p class="card-body">
+                Matte black glass UI fronts with Python or API backends — turning scripts
+                into interactive tools and dashboards that are actually fun to use.
+              </p>
+              <div class="card-meta-row">
+                <span class="card-tag">Frontend + backend</span>
+                <span>Dashboards & panels</span>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATS -->
+      <section id="stats">
+        <div class="container">
+          <div class="section-header reveal">
+            <div class="eyebrow">Stats</div>
+            <h2 class="section-title">
+              Workloads I’ve <span>already automated.</span>
+            </h2>
+            <p class="section-subtitle">
+              Once something becomes repetitive, I usually script it, clean it,
+              and then run it quietly in the background of my day.
+            </p>
+          </div>
+
+          <div class="stats-grid">
+            <article class="stat-card reveal">
+              <div class="stat-label">Major automation systems</div>
+              <div class="stat-value">5+</div>
+              <div>Voice, TTS, STT, subtitles, daily quotes and content pipelines.</div>
+            </article>
+
+            <article class="stat-card reveal">
+              <div class="stat-label">Audio/video flows</div>
+              <div class="stat-value">100+</div>
+              <div>End‑to‑end processes moved from manual clicking to scripts.</div>
+            </article>
+
+            <article class="stat-card reveal">
+              <div class="stat-label">Python tools</div>
+              <div class="stat-value">50+</div>
+              <div>Small utilities, helpers and CLI tools that run daily tasks.</div>
+            </article>
+
+            <article class="stat-card reveal">
+              <div class="stat-label">Framework lock‑in</div>
+              <div class="stat-value">0</div>
+              <div>HTML, CSS, JS on the front; Python and CLI behind — easy to move.</div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA + CONTACT -->
+      <section class="cta-section" id="cta">
+        <div class="container">
+          <div class="cta-box reveal">
+            <h2 class="cta-title">Want to automate your workflow?</h2>
+            <p class="cta-text">
+              Tell me what your current process looks like — where you click, export,
+              rename, wait and repeat. I’ll help you turn that into a pipeline instead.
+            </p>
+            <a href="mailto:ankypanicker@gmail.com">
+              <button class="btn btn-primary">Email your workflow</button>
+            </a>
+
+            <div class="contact-card">
+              <p><strong>Email</strong><br>ankypanicker@gmail.com</p>
+              <br>
+              <p><strong>GitHub</strong><br>
+                <a href="https://github.com/ankypanicker" target="_blank" rel="noreferrer" style="color:var(--accent);">
+                  github.com/ankypanicker
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="container">
+        <div class="footer-inner">
+          <span>© 2025 Ankit Panicker. Matte black, loud automation.</span>
+          <div class="footer-links">
+            <a href="#hero">Back to top</a>
+          </div>
+        </div>
+      </div>
+    </footer>
   </div>
-</nav>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-text">
-    <h1 class="hero-title">Automation Engineer & <br> <span>AI Workflow Developer</span></h1>
-    <p class="hero-sub">
-      I build advanced AI pipelines: Voice Clone, TTS, STT, Subtitles, Auto-YouTube Video Generators,
-      and complete automation systems using Python, UI/UX, and backend tech.
-    </p>
-    <button class="hero-btn">See My Automations</button>
-  </div>
+  <script>
+    // THEME TOGGLE
+    const themeToggle = document.getElementById("theme-toggle");
+    const bodyEl = document.body;
 
-  <div class="hero-img">
-    <img src="https://raw.githubusercontent.com/nishitatambde-hue/nishitatambde-hue.github.io/main/Screenshot%202025-12-06%20005907.png">
-  </div>
-</section>
+    if (themeToggle) {
+      themeToggle.addEventListener("click", () => {
+        bodyEl.classList.toggle("theme-orange");
+      });
+    }
 
-<script>
-function toggleTheme() {
-  document.body.classList.toggle("theme-orange");
-}
-</script>
-<!-- ============================================================
-     AUTOMATIONS SECTION  
-=============================================================== -->
-<section id="automations" style="padding: 80px 60px;">
-  <h2 style="font-size:2.4rem; margin-bottom: 20px; color:white;">
-    My <span style="background:linear-gradient(135deg,var(--accent),var(--accent-strong));-webkit-background-clip:text;color:transparent;">Automations</span>
-  </h2>
+    // CURSOR
+    const dot = document.querySelector(".cursor-dot");
+    const ring = document.querySelector(".cursor-ring");
 
-  <p style="color:var(--text-soft); width:60%; margin-bottom:45px;">
-    I build high-power AI automations for audio, video, content creation, subtitles, coding, and workflow engineering.
-    All my systems are end-to-end automated: generation → processing → exporting.
-  </p>
+    let ringX = window.innerWidth / 2;
+    let ringY = window.innerHeight / 2;
+    let dotX = ringX;
+    let dotY = ringY;
 
-  <div class="auto-grid" style="
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:28px;
-  ">
+    document.addEventListener("mousemove", (e) => {
+      dotX = e.clientX;
+      dotY = e.clientY;
+      dot.style.left = dotX + "px";
+      dot.style.top = dotY + "px";
+    });
 
-    <!-- CARD 1 -->
-    <div class="glass-card">
-      <img src="https://raw.githubusercontent.com/nishitatambde-hue/nishitatambde-hue.github.io/main/Screenshot%202025-12-06%20005907.png" class="card-img">
-      <h3 class="card-title">Voice Clone Automation</h3>
-      <p class="card-body">XTTS cloning + batching + 40+40 chunking + auto merge, volume boost, echo, noise removal.</p>
-    </div>
+    function animateRing() {
+      ringX += (dotX - ringX) * 0.18;
+      ringY += (dotY - ringY) * 0.18;
+      ring.style.left = ringX + "px";
+      ring.style.top = ringY + "px";
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
 
-    <!-- CARD 2 -->
-    <div class="glass-card">
-      <h3 class="card-title">Full TTS Engine Automation</h3>
-      <p class="card-body">Industry-level text-to-speech pipeline with progress bars, logging, retries, and long-audio support.</p>
-    </div>
+    document.addEventListener("mousedown", () => {
+      ring.style.transform = "translate(-50%, -50%) scale(0.65)";
+      ring.style.opacity = "0.9";
+    });
+    document.addEventListener("mouseup", () => {
+      ring.style.transform = "translate(-50%, -50%) scale(1)";
+      ring.style.opacity = "0.7";
+    });
 
-    <!-- CARD 3 -->
-    <div class="glass-card">
-      <h3 class="card-title">STT + Auto Subtitle Maker</h3>
-      <p class="card-body">Whisper STT → Clean formatting → Auto .SRT/.VTT → Subtitle burn-in for videos.</p>
-    </div>
-
-    <!-- CARD 4: YouTube Generator -->
-    <div class="glass-card">
-      <h3 class="card-title">YouTube Auto Video Generator</h3>
-      <p class="card-body">Script → AI voice → Subtitles → Visuals → FFmpeg render → Complete video automation.</p>
-    </div>
-
-    <!-- CARD 5 -->
-    <div class="glass-card">
-      <h3 class="card-title">Python Automation Tools</h3>
-      <p class="card-body">From batch processors to CLI tools: file workflows, audio pipelines, APIs, automation engines.</p>
-    </div>
-
-    <!-- CARD 6 -->
-    <div class="glass-card">
-      <h3 class="card-title">UI + Backend Systems</h3>
-      <p class="card-body">Frontend UI + backend microservices creating seamless intelligent automation dashboards.</p>
-    </div>
-
-  </div>
-</section>
-
-<!-- ============================================================
-     STATS SECTION  
-=============================================================== -->
-<section style="padding:80px 60px;">
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;">
-
-    <div class="stat-box glass-card">
-      <h2 style="font-size:2.4rem; color:var(--accent);">5+</h2>
-      <p class="stat-label">Major Automations</p>
-    </div>
-
-    <div class="stat-box glass-card">
-      <h2 style="font-size:2.4rem; color:var(--accent);">100+</h2>
-      <p class="stat-label">Audio/Video Processes Automated</p>
-    </div>
-
-    <div class="stat-box glass-card">
-      <h2 style="font-size:2.4rem; color:var(--accent);">50+</h2>
-      <p class="stat-label">Custom Python Tools</p>
-    </div>
-
-    <div class="stat-box glass-card">
-      <h2 style="font-size:2.4rem; color:var(--accent);">0</h2>
-      <p class="stat-label">Framework Lock-in</p>
-    </div>
-
-  </div>
-</section>
-
-<!-- ============================================================
-     PROJECTS SECTION  
-=============================================================== -->
-<section id="projects" style="padding: 80px 60px;">
-  <h2 style="font-size:2.4rem; margin-bottom:20px;">Projects</h2>
-
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px;">
-
-    <div class="glass-card">
-      <h3 class="card-title">AI Voice Engine</h3>
-      <p class="card-body">A full XTTS voice clone + TTS system with chunking, auto merge, and enhanced DSP pipeline.</p>
-    </div>
-
-    <div class="glass-card">
-      <h3 class="card-title">Shopify Automation Store</h3>
-      <p class="card-body">Custom sections, reviews system, coupon timers, and auto-updating product logic.</p>
-    </div>
-
-    <div class="glass-card">
-      <h3 class="card-title">GlassFlow Portfolio</h3>
-      <p class="card-body">A matte black, 3D animated, glass-based website with droplets and GSAP transitions.</p>
-    </div>
-
-  </div>
-</section>
-<!-- ============================================================
-     SERVICES SECTION  
-=============================================================== -->
-<section id="services" style="padding:80px 60px;">
-  <h2 style="font-size:2.4rem; margin-bottom:15px;">What I Can Build</h2>
-  <p style="color:var(--text-soft); width:60%; margin-bottom:40px;">
-    I help creators, developers, startups and content teams automate their entire workflow with AI engines, Python automation, 
-    backend systems, and modern UI.
-  </p>
-
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px;">
-
-    <div class="glass-card">
-      <h3 class="card-title">End-to-End AI Automation</h3>
-      <p class="card-body">
-        Complete pipelines for TTS, STT, script generation, video rendering, thumbnails, metadata, subtitles, and full automation.
-      </p>
-    </div>
-
-    <div class="glass-card">
-      <h3 class="card-title">Python Workflow Engines</h3>
-      <p class="card-body">
-        Complex file systems, automation workers, batch processors, data pipelines, and custom APIs.
-      </p>
-    </div>
-
-    <div class="glass-card">
-      <h3 class="card-title">Frontend + UI Systems</h3>
-      <p class="card-body">
-        Modern glass UI, dashboard panels, controls, animations (GSAP), and smooth matte designs.
-      </p>
-    </div>
-
-  </div>
-</section>
-
-
-<!-- ============================================================
-     CONTACT SECTION  
-=============================================================== -->
-<section id="contact" style="padding:80px 60px;">
-  <h2 style="font-size:2.2rem; margin-bottom:15px;">Let’s Build Something</h2>
-  <p style="color:var(--text-soft); margin-bottom:35px;">
-    If you want automations, systems, or custom AI workflows — contact me anytime.
-  </p>
-
-  <div class="glass-card" style="padding:30px;">
-    <p style="font-size:1.1rem; margin-bottom:8px;"><strong>Email:</strong></p>
-    <p style="margin-bottom:18px; color:var(--accent);">ankypanicker@gmail.com</p>
-
-    <p style="font-size:1.1rem; margin-bottom:8px;"><strong>GitHub:</strong></p>
-    <p>
-      <a href="https://github.com/ankypanicker" style="color:var(--accent); text-decoration:none;">
-        github.com/ankypanicker
-      </a>
-    </p>
-  </div>
-</section>
-
-
-<!-- ============================================================
-     CTA SECTION  
-=============================================================== -->
-<section style="padding:100px 60px; text-align:center;">
-  <h2 style="font-size:2.4rem; margin-bottom:15px;">Ready to Automate Everything?</h2>
-  <p style="color:var(--text-soft); max-width:580px; margin:0 auto 30px;">
-    I create fully automated AI systems that run 24/7 — voice, video, subtitles, scripts, tools, dashboards, anything.
-  </p>
-
-  <button class="btn btn-primary" style="font-size:1rem; padding:14px 32px;">
-    Contact Me
-  </button>
-</section>
-
-
-<!-- ============================================================
-     FOOTER  
-=============================================================== -->
-<footer style="padding:30px 60px; border-top:1px solid rgba(255,255,255,0.1); color:var(--text-soft);">
-  <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-    <span>© 2025 Ankit Panicker — Automation Engineer</span>
-    <span>Built in pure HTML, CSS, JS</span>
-  </div>
-</footer>
-
-
-<!-- ============================================================
-     EXTRA CSS FOR CARD IMAGES  
-=============================================================== -->
-<style>
-  .card-img {
-    width: 100%;
-    border-radius: 16px;
-    margin-bottom: 14px;
-    border: 1px solid rgba(255,255,255,0.12);
-    box-shadow: 0 0 18px rgba(0,0,0,0.6);
-  }
-
-  #automations .glass-card {
-    padding: 20px;
-  }
-</style>
-
+    // SCROLL REVEAL
+    const reveals = document.querySelectorAll(".reveal");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+    reveals.forEach((el) => observer.observe(el));
+  </script>
 </body>
 </html>
+
 
 
