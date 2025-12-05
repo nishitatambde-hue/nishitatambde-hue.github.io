@@ -497,10 +497,6 @@
         0 0 24px var(--accent-soft);
       font-size: 0.8rem;
       max-width: 22rem;
-      opacity: 0;
-      transform: translateY(10px);
-      animation: fadeUp 0.9s ease-out forwards;
-      animation-delay: 0.9s;
     }
 
     .hero-cli-title {
@@ -532,10 +528,6 @@
       box-shadow:
         0 26px 70px rgba(0, 0, 0, 0.96),
         0 0 40px rgba(0, 0, 0, 1);
-      opacity: 0;
-      transform: translateY(22px);
-      animation: fadeUp 0.9s ease-out forwards;
-      animation-delay: 0.35s;
     }
 
     .hero-panel {
@@ -1144,20 +1136,20 @@
 
               <p class="hero-subtitle">
                 I’m <span class="hero-highlight">Ankit Panicker</span>, an Automation Engineer who codes
-                <strong>end‑to‑end AI pipelines</strong>: voice cloning, TTS engines, STT processors,
-                subtitle generators, YouTube auto‑video systems, and Python workflow engines that run 24/7.
+                <strong>end-to-end AI pipelines</strong>: voice cloning, TTS engines, STT processors,
+                subtitle generators, YouTube auto-video systems, and Python workflow engines that run 24/7.
               </p>
 
               <p class="hero-subtitle">
                 But here’s what makes my work different — I combine automation with
                 <strong>premium UI/UX</strong>, <strong>sleek GUI design</strong>, and
-                <strong>next‑gen HTML front‑ends</strong> that feel like a futuristic OS:
-                matte‑black surfaces, frosted glass panels, neon edges, droplets and soft motion.
+                <strong>next-gen HTML front-ends</strong> that feel like a futuristic OS:
+                matte-black surfaces, frosted glass panels, neon edges, droplets and soft motion.
               </p>
 
               <p class="hero-subtitle emphasis">
                 <strong>Automation is the engine. UI/UX is the gateway.<br />
-                I build both — beautifully, intelligently, end‑to‑end.</strong>
+                I build both — beautifully, intelligently, end-to-end.</strong>
               </p>
 
               <div class="hero-actions">
@@ -1171,15 +1163,6 @@
 
               <div class="cta-tagline">
                 ✨ <span>Where powerful automation meets beautiful design.</span>
-              </div>
-
-              <div class="hero-cli-chip">
-                <div class="hero-cli-title">CLI · Runtime</div>
-                <div class="hero-cli-main">Dark terminal, frosted UI, clean logs.</div>
-                <div class="hero-cli-sub">
-                  I care about chunking, progress bars, retries and structure — so your tools
-                  feel safe to run every single day.
-                </div>
               </div>
             </div>
 
@@ -1216,14 +1199,22 @@
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
 
+              <!-- CLI CARD MOVED BELOW HUD -->
+              <div class="hero-cli-chip reveal">
+                <div class="hero-cli-title">CLI · Runtime</div>
+                <div class="hero-cli-main">Dark terminal, frosted UI, clean logs.</div>
+                <div class="hero-cli-sub">
+                  I care about chunking, progress bars, retries and structure — so your tools
+                  feel safe to run every single day.
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-
       <!-- STACK STRIP -->
       <section>
         <div class="container reveal">
@@ -1267,8 +1258,8 @@
               <div class="card-kicker">Pipeline · 01</div>
               <h3 class="card-title">Voice Clone Automation</h3>
               <p class="card-body">
-                XTTS‑based voice clone pipeline with 40+40 chunking, echo, volume boost,
-                noise handling and automatic merge — built to handle long‑form content cleanly.
+                XTTS-based voice clone pipeline with 40+40 chunking, echo, volume boost,
+                noise handling and automatic merge — built to handle long-form content cleanly.
               </p>
               <div class="card-meta-row">
                 <span class="card-tag">XTTS · batching</span>
@@ -1284,11 +1275,11 @@
               <div class="card-kicker">Pipeline · 02</div>
               <h3 class="card-title">Full TTS Engine</h3>
               <p class="card-body">
-                End‑to‑end TTS engine with progress bars, structured logs, safe retries
+                End-to-end TTS engine with progress bars, structured logs, safe retries
                 and smart text cleaning — ready for YouTube videos, podcasts and shorts.
               </p>
               <div class="card-meta-row">
-                <span class="card-tag">Long‑form audio</span>
+                <span class="card-tag">Long-form audio</span>
                 <span>Robust & repeatable</span>
               </div>
             </article>
@@ -1301,7 +1292,7 @@
               <div class="card-kicker">Pipeline · 03</div>
               <h3 class="card-title">STT + Subtitle Generator</h3>
               <p class="card-body">
-                Speech‑to‑text pipeline that creates clean subtitles: timing, splitting,
+                Speech-to-text pipeline that creates clean subtitles: timing, splitting,
                 formatting and .srt/.vtt export, ready to burn into any video.
               </p>
               <div class="card-meta-row">
@@ -1335,12 +1326,12 @@
               <div class="card-kicker">Pipeline · 05</div>
               <h3 class="card-title">Python Automation Tools</h3>
               <p class="card-body">
-                CLI tools for batch processing, file management, data clean‑up,
+                CLI tools for batch processing, file management, data clean-up,
                 and automation around APIs — built with config files and sane defaults.
               </p>
               <div class="card-meta-row">
                 <span class="card-tag">CLI · logging</span>
-                <span>Batch & config‑based</span>
+                <span>Batch & config-based</span>
               </div>
             </article>
 
@@ -1352,7 +1343,7 @@
               <div class="card-kicker">Pipeline · 06</div>
               <h3 class="card-title">UI + Backend Systems</h3>
               <p class="card-body">
-                Matte‑black glass UI fronts with Python or API backends — turning scripts
+                Matte-black glass UI fronts with Python or API backends — turning scripts
                 into interactive tools and dashboards that are actually fun to use.
               </p>
               <div class="card-meta-row">
@@ -1388,7 +1379,7 @@
             <article class="stat-card reveal">
               <div class="stat-label">Audio / video flows</div>
               <div class="stat-value">100+</div>
-              <div>End‑to‑end processes moved from manual clicking to scripts.</div>
+              <div>End-to-end processes moved from manual clicking to scripts.</div>
             </article>
 
             <article class="stat-card reveal">
@@ -1398,14 +1389,13 @@
             </article>
 
             <article class="stat-card reveal">
-              <div class="stat-label">Framework lock‑in</div>
+              <div class="stat-label">Framework lock-in</div>
               <div class="stat-value">0</div>
               <div>HTML, CSS, JS in front; Python and CLI behind — easy to move.</div>
             </article>
           </div>
         </div>
       </section>
-
       <!-- CTA + CONTACT -->
       <section class="cta-section" id="cta">
         <div class="container">
