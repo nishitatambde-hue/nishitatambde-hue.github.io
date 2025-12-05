@@ -1,0 +1,2144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>GlassFlow — Matte Black Glass Landing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-matte: #020202;
+      --bg-matte-soft: #050509;
+
+      --fg: #f9fafb;
+      --fg-soft: #e5e7eb;
+      --fg-muted: #9ca3af;
+
+      /* CYAN THEME (default) */
+      --accent: #22d3ee;
+      --accent-soft: rgba(34, 211, 238, 0.35);
+      --accent-strong: rgba(34, 211, 238, 0.8);
+
+      --accent-grad-1: #a5f3fc;
+      --accent-grad-2: #22d3ee;
+      --accent-grad-3: #38bdf8;
+
+      --glass-bg: rgba(255, 255, 255, 0.06);
+      --glass-border: rgba(255, 255, 255, 0.18);
+
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+
+      scroll-behavior: smooth;
+    }
+
+    /* ORANGE THEME */
+    body.theme-orange {
+      --accent: #fbbf24;
+      --accent-soft: rgba(251, 191, 36, 0.4);
+      --accent-strong: rgba(251, 191, 36, 0.9);
+
+      --accent-grad-1: #fef9c3;
+      --accent-grad-2: #fbbf24;
+      --accent-grad-3: #f59e0b;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, #111827 0, #020617 40%, #020202 80%);
+      color: var(--fg);
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .page {
+      min-height: 100vh;
+      position: relative;
+      z-index: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 1.6rem;
+    }
+
+    /* TEXTURED 3D BOX BACKGROUND */
+
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(31, 41, 55, 0.6) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(31, 41, 55, 0.6) 1px, transparent 1px);
+      background-size: 90px 90px;
+      mix-blend-mode: soft-light;
+      opacity: 0.2;
+      pointer-events: none;
+      z-index: -3;
+    }
+
+    .bg-cubes {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    .cube {
+      position: absolute;
+      border-radius: 18px;
+      background:
+        linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(0, 0, 0, 0.98));
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.9),
+        0 0 26px rgba(0, 0, 0, 1);
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      transform: translateZ(0) rotateX(8deg) rotateY(-8deg);
+      opacity: 0.5;
+    }
+
+    .cube-1 { width: 160px; height: 110px; top: 8%; left: 10%; }
+    .cube-2 { width: 220px; height: 140px; top: 60%; right: 6%; }
+    .cube-3 { width: 130px; height: 90px; bottom: 10%; left: 18%; }
+    .cube-4 { width: 180px; height: 120px; top: 30%; right: 22%; opacity: 0.35; }
+
+    .bg-vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 15% 0, rgba(148, 163, 184, 0.3), transparent 55%),
+        radial-gradient(circle at 80% 0, rgba(15, 23, 42, 0.9), transparent 60%),
+        radial-gradient(circle at 50% 100%, rgba(15, 23, 42, 0.95), transparent 70%);
+      mix-blend-mode: screen;
+      opacity: 0.8;
+      z-index: -4;
+    }
+
+    /* HEADER */
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(24px);
+      background:
+        radial-gradient(circle at 0 0, rgba(148, 163, 184, 0.2), transparent 55%),
+        linear-gradient(to bottom, rgba(3, 7, 18, 0.96), rgba(3, 7, 18, 0.92), transparent);
+      border-bottom: 1px solid rgba(15, 23, 42, 0.92);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 0;
+      gap: 1rem;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .logo-orb {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      padding: 2px;
+      background: radial-gradient(circle at 30% 20%, #e5f3ff, #020617);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.95),
+        0 0 18px var(--accent-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-orb-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: radial-gradient(circle at 30% 20%, #f9fafb, #020617);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-grad-3);
+    }
+
+    .logo-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.12rem;
+    }
+
+    .logo-main {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .logo-sub {
+      font-size: 0.7rem;
+      color: var(--fg-muted);
+    }
+
+    .nav-center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.6rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+    }
+
+    .nav-links a {
+      position: relative;
+      padding-block: 0.24rem;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent-grad-1), var(--accent-grad-3));
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.2s ease-out;
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* GLASS BUBBLE TOGGLE (III) */
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--fg-muted);
+    }
+
+    .theme-toggle-label {
+      opacity: 0.7;
+      transition: opacity 0.2s ease, color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .theme-toggle-label.active {
+      opacity: 1;
+      color: var(--fg-soft);
+    }
+
+    .toggle-shell {
+      position: relative;
+      width: 60px;
+      height: 26px;
+      border-radius: 999px;
+      padding: 3px;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.16), transparent 60%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(3, 7, 18, 0.98));
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 1),
+        0 16px 32px rgba(0, 0, 0, 1);
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .toggle-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0.08),
+        transparent,
+        rgba(255, 255, 255, 0.08)
+      );
+      opacity: 0.5;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .toggle-track-glow {
+      position: absolute;
+      inset: 3px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 50%, var(--accent-soft), transparent 55%);
+      opacity: 0.55;
+      filter: blur(4px);
+      pointer-events: none;
+    }
+
+    .toggle-knob {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 30% 20%, #ffffff, #dbeafe 55%, #020617 100%);
+      box-shadow:
+        0 6px 16px rgba(0, 0, 0, 1),
+        0 0 18px var(--accent-strong);
+      transform: translateX(0);
+      transition:
+        transform 0.24s ease-out,
+        box-shadow 0.24s ease-out,
+        background 0.24s ease-out;
+    }
+
+    .toggle-knob::before {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      border-radius: inherit;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.95), transparent 60%);
+      opacity: 0.85;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    body.theme-orange .toggle-knob {
+      transform: translateX(32px);
+      background:
+        radial-gradient(circle at 30% 20%, #fff7ed, #fed7aa 55%, #020617 100%);
+    }
+
+    .btn {
+      border-radius: 999px;
+      padding: 0.7rem 1.5rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      transition:
+        transform 0.16s ease-out,
+        box-shadow 0.16s ease-out,
+        border-color 0.16s ease-out,
+        background 0.16s ease-out;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      color: #020617;
+      background:
+        radial-gradient(circle at 0 0, rgba(248, 250, 252, 0.18), transparent 55%),
+        linear-gradient(90deg, var(--accent-grad-1), var(--accent-grad-3));
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 1),
+        0 0 26px var(--accent-soft);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 1),
+        0 0 36px var(--accent-soft);
+    }
+
+    .btn-ghost {
+      color: var(--fg-soft);
+      background: rgba(0, 0, 0, 0.85);
+      border-color: rgba(31, 41, 55, 0.95);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--accent-soft);
+      box-shadow: 0 0 16px var(--accent-soft);
+      transform: translateY(-1px);
+    }
+
+    /* HERO */
+
+    .hero {
+      padding: 3.7rem 0 4.2rem;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 3.4rem;
+      align-items: center;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.26rem 0.6rem 0.26rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: rgba(0, 0, 0, 0.86);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+    }
+
+    .hero-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--accent-grad-1), var(--accent));
+      box-shadow: 0 0 12px var(--accent-strong);
+    }
+
+    .hero-title {
+      margin-top: 1.5rem;
+      font-size: clamp(2.4rem, 4vw, 3.4rem);
+      line-height: 1.04;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-title span {
+      background: linear-gradient(
+        135deg,
+        #f9fafb,
+        var(--accent-grad-2),
+        var(--accent-grad-3)
+      );
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      margin-top: 1rem;
+      max-width: 30rem;
+      font-size: 0.96rem;
+      color: var(--fg-muted);
+    }
+
+    .hero-actions {
+      margin-top: 1.7rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      align-items: center;
+    }
+
+    .hero-meta {
+      margin-top: 1.3rem;
+      font-size: 0.8rem;
+      color: var(--fg-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .hero-meta-pill {
+      padding: 0.25rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: rgba(0, 0, 0, 0.88);
+    }
+
+    .hero-meta-strong {
+      color: var(--fg-soft);
+      font-weight: 500;
+    }
+
+    /* HERO DASHBOARD (glass with 3D droplets) */
+
+    .hero-panel-wrap {
+      border-radius: var(--radius-xl);
+      padding: 1px;
+      background:
+        radial-gradient(circle at 0 0, rgba(148, 163, 184, 0.3), transparent 60%),
+        linear-gradient(145deg, rgba(148, 163, 184, 0.65), rgba(51, 65, 85, 0.6), rgba(15, 23, 42, 0.95));
+      box-shadow:
+        0 26px 70px rgba(0, 0, 0, 0.96),
+        0 0 40px rgba(0, 0, 0, 1);
+      transform-style: preserve-3d;
+    }
+
+    .hero-panel {
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 10% 0, rgba(255, 255, 255, 0.2), transparent 55%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.98), #020617);
+      backdrop-filter: blur(26px) saturate(170%);
+      -webkit-backdrop-filter: blur(26px) saturate(170%);
+      border: 1px solid rgba(249, 250, 251, 0.18);
+      padding: 1.4rem 1.3rem 1.6rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      color: var(--fg-muted);
+      margin-bottom: 1.1rem;
+    }
+
+    .hero-panel-title {
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .hero-panel-status {
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(0, 0, 0, 0.86);
+      color: var(--accent-grad-1);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .hero-panel-status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--accent-grad-1), var(--accent));
+      box-shadow: 0 0 10px var(--accent-strong);
+    }
+
+    .hero-panel-main {
+      display: grid;
+      grid-template-columns: 3fr 2.2fr;
+      gap: 1.2rem;
+      align-items: center;
+    }
+
+    .hero-graph {
+      position: relative;
+      height: 170px;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 0 0, rgba(148, 163, 184, 0.22), transparent 60%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.98), #020617);
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      overflow: hidden;
+    }
+
+    /* Hyper-real droplet effect */
+
+    .droplet3d {
+      position: absolute;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.85), rgba(148, 163, 184, 0.4), rgba(15, 23, 42, 0.9));
+      border-radius: 999px;
+      box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.9),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      pointer-events: none;
+    }
+
+    .droplet3d::after {
+      content: "";
+      position: absolute;
+      width: 55%;
+      height: 55%;
+      top: 10%;
+      left: 15%;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.9), transparent 60%);
+      opacity: 0.9;
+      mix-blend-mode: screen;
+    }
+
+    .droplet-shadow {
+      position: absolute;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(0, 0, 0, 0.9), transparent 70%);
+      opacity: 0.75;
+      pointer-events: none;
+      filter: blur(6px);
+    }
+
+    .dr-hero-1 { width: 24px; height: 24px; top: 26px; left: 40px; }
+    .dr-hero-2 { width: 14px; height: 14px; top: 80px; left: 80px; }
+    .dr-hero-3 { width: 28px; height: 28px; bottom: 26px; right: 32px; }
+
+    .dr-shadow-1 { width: 30px; height: 12px; top: 48px; left: 42px; }
+    .dr-shadow-2 { width: 20px; height: 10px; top: 96px; left: 82px; }
+    .dr-shadow-3 { width: 34px; height: 14px; bottom: 18px; right: 33px; }
+
+    .hero-graph::before,
+    .hero-graph::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      mix-blend-mode: screen;
+      background-image: linear-gradient(
+        120deg,
+        var(--accent-grad-2),
+        var(--accent-grad-3)
+      );
+      filter: blur(1px);
+    }
+
+    .hero-graph::before {
+      opacity: 0.9;
+      animation: graphWaveA 9s ease-in-out infinite;
+    }
+
+    .hero-graph::after {
+      opacity: 0.55;
+      animation: graphWaveB 13s ease-in-out infinite;
+    }
+
+    @keyframes graphWaveA {
+      0% {
+        clip-path: polygon(0 70%, 20% 55%, 40% 72%, 60% 48%, 80% 70%, 100% 52%, 100% 100%, 0 100%);
+      }
+      50% {
+        clip-path: polygon(0 58%, 20% 72%, 40% 48%, 60% 70%, 80% 52%, 100% 68%, 100% 100%, 0 100%);
+      }
+      100% {
+        clip-path: polygon(0 70%, 20% 55%, 40% 72%, 60% 48%, 80% 70%, 100% 52%, 100% 100%, 0 100%);
+      }
+    }
+
+    @keyframes graphWaveB {
+      0% {
+        clip-path: polygon(0 50%, 18% 70%, 37% 45%, 55% 70%, 72% 52%, 100% 65%, 100% 100%, 0 100%);
+      }
+      50% {
+        clip-path: polygon(0 68%, 18% 45%, 37% 72%, 55% 48%, 72% 68%, 100% 50%, 100% 100%, 0 100%);
+      }
+      100% {
+        clip-path: polygon(0 50%, 18% 70%, 37% 45%, 55% 70%, 72% 52%, 100% 65%, 100% 100%, 0 100%);
+      }
+    }
+
+    .hero-metrics {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      font-size: 0.8rem;
+    }
+
+    .metric-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.85rem;
+    }
+
+    .metric-label {
+      color: var(--fg-muted);
+      font-size: 0.76rem;
+    }
+
+    .metric-value {
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    .metric-pill {
+      font-size: 0.7rem;
+      padding: 0.14rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid var(--accent-soft);
+      color: var(--accent-grad-1);
+      margin-left: 0.3rem;
+    }
+
+    .hero-chip {
+      position: absolute;
+      bottom: 12px;
+      left: 16px;
+      border-radius: 18px;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.73rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background:
+        radial-gradient(circle at 0 0, rgba(148, 163, 184, 0.22), transparent 55%),
+        rgba(0, 0, 0, 0.92);
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      box-shadow:
+        0 16px 36px rgba(0, 0, 0, 0.96),
+        0 0 24px var(--accent-soft);
+    }
+
+    .hero-chip-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 28% 20%, var(--accent-grad-1), #020617);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: var(--accent-grad-3);
+      box-shadow: 0 0 14px var(--accent-strong);
+    }
+
+    .hero-chip-text strong {
+      display: block;
+      font-size: 0.78rem;
+    }
+
+    .hero-chip-text small {
+      color: var(--fg-muted);
+      font-size: 0.68rem;
+    }
+
+    /* LOGOS */
+
+    section {
+      padding: 3.4rem 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logos-row {
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.96);
+      background: rgba(0, 0, 0, 0.9);
+      padding: 0.9rem 1.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.1rem;
+      font-size: 0.8rem;
+      color: var(--fg-muted);
+    }
+
+    .logos-label {
+      font-weight: 500;
+      color: var(--fg-soft);
+    }
+
+    .logos-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.75rem;
+    }
+
+    .logo-pill {
+      padding: 0.22rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.85);
+      background: rgba(15, 23, 42, 0.98);
+    }
+
+    /* SECTION HEADERS */
+
+    .section-header {
+      text-align: center;
+      max-width: 540px;
+      margin: 0 auto 2.2rem;
+    }
+
+    .eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .section-title {
+      font-size: 1.7rem;
+      letter-spacing: -0.03em;
+    }
+
+    .section-title span {
+      background: linear-gradient(135deg, var(--accent-grad-1), var(--accent-grad-3));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .section-subtitle {
+      margin-top: 0.6rem;
+      font-size: 0.88rem;
+      color: var(--fg-muted);
+    }
+
+    /* FEATURES (glass cards with droplets) */
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.7rem;
+    }
+
+    .glass-card-outer {
+      perspective: 1200px;
+    }
+
+    .glass-card {
+      position: relative;
+      border-radius: var(--radius-lg);
+      padding: 1.3rem 1.25rem 1.4rem;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.2), transparent 55%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(0, 0, 0, 0.98));
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.98),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+      overflow: hidden;
+      transform-style: preserve-3d;
+      transform: translateZ(0);
+      transition:
+        transform 0.45s ease,
+        box-shadow 0.45s ease,
+        border-color 0.3s ease;
+      cursor: default;
+    }
+
+    .glass-card::before {
+      content: "";
+      position: absolute;
+      top: -55%;
+      left: -20%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(
+        circle at 25% 25%,
+        rgba(255, 255, 255, 0.18),
+        transparent 60%
+      );
+      opacity: 0.35;
+      transform: rotate(18deg);
+      transition: transform 0.45s ease, opacity 0.45s ease;
+      pointer-events: none;
+    }
+
+    .glass-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid transparent;
+      background: linear-gradient(
+        135deg,
+        transparent 0%,
+        var(--accent-soft) 52%,
+        transparent 100%
+      );
+      opacity: 0.44;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-10px) rotateX(5deg) rotateY(-4deg);
+      box-shadow:
+        0 26px 60px rgba(0, 0, 0, 1),
+        0 0 30px var(--accent-soft);
+      border-color: rgba(249, 250, 251, 0.25);
+    }
+
+    .glass-card:hover::before {
+      transform: rotate(4deg) translateY(14px);
+      opacity: 0.55;
+    }
+
+    .glass-droplet {
+      position: absolute;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.95), rgba(148, 163, 184, 0.4), rgba(15, 23, 42, 0.92));
+      border-radius: 999px;
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+      box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.9),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+      pointer-events: none;
+    }
+
+    .glass-droplet::after {
+      content: "";
+      position: absolute;
+      width: 55%;
+      height: 55%;
+      top: 12%;
+      left: 18%;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.95), transparent 60%);
+      opacity: 0.9;
+      mix-blend-mode: screen;
+    }
+
+    .gdrop-1 { width: 18px; height: 18px; top: 22px; left: 38px; }
+    .gdrop-2 { width: 12px; height: 12px; top: 70px; left: 78px; }
+    .gdrop-3 { width: 22px; height: 22px; top: 112px; right: 26px; }
+
+    .card-kicker {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--fg-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .card-title {
+      font-size: 1.08rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #f9fafb, var(--accent-grad-3));
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 0.45rem;
+    }
+
+    .card-body {
+      font-size: 0.86rem;
+      color: var(--fg-muted);
+      margin-bottom: 1rem;
+    }
+
+    .card-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.7rem;
+      font-size: 0.76rem;
+      color: var(--fg-muted);
+    }
+
+    .card-tag {
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(0, 0, 0, 0.92);
+      color: var(--accent-grad-1);
+    }
+
+    /* STATS */
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+
+    .stat-card {
+      border-radius: 18px;
+      padding: 1.1rem 1.1rem;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.16), transparent 60%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(0, 0, 0, 0.98));
+      border: 1px solid rgba(31, 41, 55, 0.98);
+      box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.98),
+        0 0 24px rgba(0, 0, 0, 1);
+      font-size: 0.84rem;
+      color: var(--fg-muted);
+    }
+
+    .stat-label {
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-value {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 0.1rem;
+      color: var(--fg-soft);
+    }
+
+    /* HOW IT WORKS */
+
+    .how-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      gap: 2.3rem;
+      align-items: center;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.9rem;
+      align-items: flex-start;
+      border-radius: 18px;
+      padding: 0.9rem 0.95rem;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(31, 41, 55, 0.96);
+      font-size: 0.84rem;
+      color: var(--fg-muted);
+    }
+
+    .step-index {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--fg);
+      background: radial-gradient(circle at 30% 20%, var(--accent-grad-1), #020617);
+      box-shadow: 0 0 14px var(--accent-strong);
+    }
+
+    .step-title {
+      font-size: 0.94rem;
+      font-weight: 500;
+      color: var(--fg-soft);
+      margin-bottom: 0.2rem;
+    }
+
+    .how-panel {
+      border-radius: 20px;
+      padding: 1.4rem 1.3rem;
+      background:
+        radial-gradient(circle at 0 0, var(--accent-soft), transparent 60%),
+        linear-gradient(145deg, rgba(0, 0, 0, 0.98), rgba(15, 23, 42, 0.98));
+      border: 1px solid var(--accent-soft);
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 1),
+        0 0 30px var(--accent-soft);
+      font-size: 0.84rem;
+      color: var(--fg-muted);
+    }
+
+    .how-label {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--fg-muted);
+    }
+
+    .how-main {
+      margin-top: 0.6rem;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.9rem;
+    }
+
+    .how-number {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--fg-soft);
+    }
+
+    .how-pill {
+      font-size: 0.76rem;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(0, 0, 0, 0.9);
+      color: var(--accent-grad-1);
+    }
+
+    .how-progress {
+      margin-top: 0.8rem;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 1);
+      overflow: hidden;
+    }
+
+    .how-progress-fill {
+      height: 100%;
+      width: 72%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent-grad-2), var(--accent-grad-3));
+      box-shadow: 0 0 22px var(--accent-soft);
+      transform-origin: left;
+    }
+
+    /* COMPARISON */
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.6rem;
+    }
+
+    .compare-card {
+      border-radius: 20px;
+      padding: 1.3rem 1.2rem;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.16), transparent 55%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(0, 0, 0, 0.98));
+      border: 1px solid rgba(31, 41, 55, 0.98);
+      box-shadow:
+        0 22px 50px rgba(0, 0, 0, 1),
+        0 0 26px rgba(0, 0, 0, 1);
+      font-size: 0.84rem;
+      color: var(--fg-muted);
+    }
+
+    .compare-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--fg-muted);
+      margin-bottom: 0.3rem;
+    }
+
+    .compare-title {
+      font-size: 1rem;
+      color: var(--fg-soft);
+      margin-bottom: 0.7rem;
+    }
+
+    .compare-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .compare-list li {
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+
+    .compare-bullet {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      margin-top: 0.16rem;
+      flex-shrink: 0;
+    }
+
+    .compare-bullet.bad {
+      background: radial-gradient(circle, #fecaca, #b91c1c);
+    }
+
+    .compare-bullet.good {
+      background: radial-gradient(circle, var(--accent-grad-1), var(--accent-grad-3));
+    }
+
+    /* TESTIMONIALS */
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+
+    .testimonial {
+      border-radius: 18px;
+      padding: 1.1rem 1.1rem 1rem;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.16), transparent 55%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(0, 0, 0, 0.98));
+      border: 1px solid rgba(31, 41, 55, 0.96);
+      box-shadow:
+        0 18px 45px rgba(0, 0, 0, 1),
+        0 0 24px rgba(0, 0, 0, 1);
+      font-size: 0.86rem;
+      color: var(--fg-muted);
+    }
+
+    .testimonial-quote {
+      margin-bottom: 0.7rem;
+    }
+
+    .testimonial-footer {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .testimonial-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, var(--accent-grad-1), #020617);
+      border: 2px solid #020617;
+      box-shadow: 0 0 14px var(--accent-strong);
+    }
+
+    .testimonial-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .testimonial-name {
+      font-size: 0.82rem;
+      color: var(--fg-soft);
+      font-weight: 500;
+    }
+
+    .testimonial-role {
+      font-size: 0.76rem;
+      color: var(--fg-muted);
+    }
+
+    /* PRICING */
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.6rem;
+    }
+
+    .pricing-card {
+      border-radius: 20px;
+      padding: 1.3rem 1.2rem 1.4rem;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.16), transparent 55%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(0, 0, 0, 0.98));
+      border: 1px solid rgba(31, 41, 55, 0.98);
+      box-shadow:
+        0 22px 50px rgba(0, 0, 0, 1),
+        0 0 26px rgba(0, 0, 0, 1);
+      font-size: 0.84rem;
+      color: var(--fg-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .pricing-card.highlight {
+      border-color: var(--accent-soft);
+      box-shadow:
+        0 28px 60px rgba(0, 0, 0, 1),
+        0 0 36px var(--accent-soft);
+    }
+
+    .pricing-label {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--fg-muted);
+    }
+
+    .pricing-name {
+      font-size: 1rem;
+      color: var(--fg-soft);
+      font-weight: 500;
+    }
+
+    .pricing-price {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--fg-soft);
+    }
+
+    .pricing-price span {
+      font-size: 0.86rem;
+      font-weight: 400;
+      color: var(--fg-muted);
+      margin-left: 0.3rem;
+    }
+
+    .pricing-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .pricing-list li::before {
+      content: "• ";
+      color: var(--accent-grad-3);
+      margin-right: 0.2rem;
+    }
+
+    .pricing-cta {
+      margin-top: auto;
+    }
+
+    /* CTA */
+
+    .cta {
+      padding-bottom: 4.1rem;
+    }
+
+    .cta-inner {
+      border-radius: var(--radius-xl);
+      padding: 2.4rem 2.2rem;
+      background:
+        radial-gradient(circle at 0 0, var(--accent-soft), transparent 64%),
+        linear-gradient(145deg, rgba(0, 0, 0, 0.98), rgba(15, 23, 42, 0.98));
+      backdrop-filter: blur(26px) saturate(170%);
+      -webkit-backdrop-filter: blur(26px) saturate(170%);
+      border: 1px solid rgba(249, 250, 251, 0.18);
+      box-shadow:
+        0 30px 70px rgba(0, 0, 0, 1),
+        0 0 34px var(--accent-soft);
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
+      gap: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-inner::after {
+      content: "";
+      position: absolute;
+      width: 230px;
+      height: 230px;
+      border-radius: 999px;
+      right: -70px;
+      top: -60px;
+      background: radial-gradient(circle, var(--accent-soft), transparent);
+      opacity: 0.85;
+      pointer-events: none;
+      filter: blur(3px);
+    }
+
+    .cta-title {
+      font-size: 1.6rem;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.7rem;
+    }
+
+    .cta-text {
+      font-size: 0.9rem;
+      color: var(--fg-muted);
+      max-width: 420px;
+    }
+
+    .cta-actions {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+    }
+
+    .cta-right {
+      justify-self: flex-end;
+      font-size: 0.8rem;
+      color: var(--fg-muted);
+    }
+
+    .cta-stat {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .cta-stat span {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--fg-soft);
+    }
+
+    .cta-note {
+      margin-top: 0.5rem;
+      font-size: 0.78rem;
+    }
+
+    /* FOOTER */
+
+    footer {
+      padding: 1.7rem 0 2.3rem;
+      border-top: 1px solid rgba(15, 23, 42, 0.95);
+      font-size: 0.78rem;
+      color: var(--fg-muted);
+      backdrop-filter: blur(18px);
+      background: linear-gradient(
+        to top,
+        rgba(3, 7, 18, 0.96),
+        rgba(3, 7, 18, 0.9),
+        transparent
+      );
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* REVEAL ANIMATIONS */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.6s ease-out,
+        transform 0.6s ease-out;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 1024px) {
+      .hero-inner {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .hero-panel-wrap {
+        max-width: 420px;
+        margin: 2.2rem auto 0;
+      }
+      .cta-inner {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .cta-right {
+        justify-self: flex-start;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .features-grid,
+      .stats-grid,
+      .testimonials-grid,
+      .pricing-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-center {
+        display: none;
+      }
+      .hero {
+        padding-top: 2.6rem;
+      }
+      .logos-row {
+        justify-content: center;
+        text-align: center;
+      }
+      .logos-label {
+        width: 100%;
+      }
+      .cta-inner {
+        padding: 2rem 1.7rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .features-grid,
+      .stats-grid,
+      .testimonials-grid,
+      .pricing-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .compare-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .cta-inner {
+        padding: 1.8rem 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-vignette"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-cubes">
+    <div class="cube cube-1"></div>
+    <div class="cube cube-2"></div>
+    <div class="cube cube-3"></div>
+    <div class="cube cube-4"></div>
+  </div>
+
+  <div class="page">
+    <!-- HEADER -->
+    <header>
+      <div class="container">
+        <nav class="nav">
+          <div class="nav-left">
+            <div class="logo-orb">
+              <div class="logo-orb-inner">G</div>
+            </div>
+            <div class="logo-block">
+              <div class="logo-main">GlassFlow</div>
+              <div class="logo-sub">Matte Black Glass System</div>
+            </div>
+          </div>
+
+          <div class="nav-center">
+            <div class="nav-links">
+              <a href="#hero">Overview</a>
+              <a href="#features">Surfaces</a>
+              <a href="#stats">Impact</a>
+              <a href="#pricing">Pricing</a>
+            </div>
+          </div>
+
+          <div class="nav-right">
+            <div class="theme-toggle">
+              <span class="theme-toggle-label theme-left active">Cyan</span>
+              <div class="toggle-shell" id="theme-toggle">
+                <div class="toggle-track-glow"></div>
+                <div class="toggle-knob"></div>
+              </div>
+              <span class="theme-toggle-label theme-right">Orange</span>
+            </div>
+
+            <button class="btn btn-primary">Request access</button>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <main>
+      <section class="hero" id="hero">
+        <div class="container">
+          <div class="hero-inner">
+            <div class="hero-left reveal">
+              <div class="hero-pill">
+                <span class="hero-dot"></span>
+                MATTE · GLASS · DROPLETS
+              </div>
+
+              <h1 class="hero-title">
+                A <span>headset-grade surface</span>
+                for your web product.
+              </h1>
+
+              <p class="hero-subtitle">
+                GlassFlow gives you a matte black, frosted glass canvas with realistic droplets and depth — so your site feels like it’s running inside a next-gen OS.
+              </p>
+
+              <div class="hero-actions">
+                <button class="btn btn-primary">Open live preview</button>
+                <button class="btn btn-ghost">Download starter files</button>
+              </div>
+
+              <div class="hero-meta">
+                <span class="hero-meta-pill">
+                  <span class="hero-meta-strong">Pure HTML + CSS + JS</span>
+                </span>
+                <span>Drop it into any stack — React, Shopify, Framer, or plain HTML.</span>
+              </div>
+            </div>
+
+            <div class="hero-right reveal">
+              <div class="hero-panel-wrap" data-tilt="10">
+                <div class="hero-panel">
+                  <div class="hero-panel-header">
+                    <div class="hero-panel-title">
+                      LIVE SURFACE · WATER GLASS
+                    </div>
+                    <div class="hero-panel-status">
+                      <span class="hero-panel-status-dot"></span>
+                      Depth simulation · ON
+                    </div>
+                  </div>
+
+                  <div class="hero-panel-main">
+                    <div class="hero-graph">
+                      <!-- 3D droplets + shadows -->
+                      <div class="droplet3d dr-hero-1"></div>
+                      <div class="droplet3d dr-hero-2"></div>
+                      <div class="droplet3d dr-hero-3"></div>
+
+                      <div class="droplet-shadow dr-shadow-1"></div>
+                      <div class="droplet-shadow dr-shadow-2"></div>
+                      <div class="droplet-shadow dr-shadow-3"></div>
+                    </div>
+
+                    <div class="hero-metrics">
+                      <div class="metric-row">
+                        <span class="metric-label">Glass blur</span>
+                        <span class="metric-value">
+                          22 px
+                          <span class="metric-pill">frosted</span>
+                        </span>
+                      </div>
+                      <div class="metric-row">
+                        <span class="metric-label">Droplet realism</span>
+                        <span class="metric-value">Vision-style · layered</span>
+                      </div>
+                      <div class="metric-row">
+                        <span class="metric-label">Motion profile</span>
+                        <span class="metric-value">Soft tilt · on hover</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="hero-chip">
+                    <div class="hero-chip-dot">◎</div>
+                    <div class="hero-chip-text">
+                      <strong>Matte black, no harsh reflection</strong>
+                      <small>The glass catches the light, the background stays calm for content.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LOGOS -->
+      <section>
+        <div class="container reveal">
+          <div class="logos-row">
+            <div class="logos-label">
+              Applied to prototypes at teams like:
+            </div>
+            <div class="logos-list">
+              <span class="logo-pill">Northline</span>
+              <span>Polar OS</span>
+              <span>NovaGrid</span>
+              <span class="logo-pill">Brightstack</span>
+              <span>Quanta</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FEATURES -->
+      <section id="features">
+        <div class="container">
+          <div class="section-header reveal">
+            <div class="eyebrow">Surfaces</div>
+            <h2 class="section-title">
+              All the <span>glass panels</span> you need, pre-built.
+            </h2>
+            <p class="section-subtitle">
+              Hero tiles, metric cards, control trays — each is matte, frosted and droplet-ready. Swap the content, keep the feel.
+            </p>
+          </div>
+
+          <div class="features-grid">
+            <div class="glass-card-outer reveal">
+              <article class="glass-card">
+                <div class="glass-droplet gdrop-1"></div>
+                <div class="glass-droplet gdrop-2"></div>
+                <div class="glass-droplet gdrop-3"></div>
+
+                <div class="card-kicker">Surface · 01</div>
+                <h3 class="card-title">Hero spotlight</h3>
+                <p class="card-body">
+                  A wide, statement glass block designed for hero sections and modal previews. Droplets sit high for maximum shine.
+                </p>
+                <div class="card-meta-row">
+                  <span class="card-tag">Perfect for hero modules</span>
+                  <span>320–420px width</span>
+                </div>
+              </article>
+            </div>
+
+            <div class="glass-card-outer reveal">
+              <article class="glass-card">
+                <div class="glass-droplet gdrop-1"></div>
+                <div class="glass-droplet gdrop-2"></div>
+                <div class="glass-droplet gdrop-3"></div>
+
+                <div class="card-kicker">Surface · 02</div>
+                <h3 class="card-title">Metric glass</h3>
+                <p class="card-body">
+                  A focused panel for KPIs and status. Uses subtle refraction and droplet highlights to draw the eye without noise.
+                </p>
+                <div class="card-meta-row">
+                  <span class="card-tag">KPIs & signal</span>
+                  <span>Stats & labels built in</span>
+                </div>
+              </article>
+            </div>
+
+            <div class="glass-card-outer reveal">
+              <article class="glass-card">
+                <div class="glass-droplet gdrop-1"></div>
+                <div class="glass-droplet gdrop-2"></div>
+                <div class="glass-droplet gdrop-3"></div>
+
+                <div class="card-kicker">Surface · 03</div>
+                <h3 class="card-title">Action tray</h3>
+                <p class="card-body">
+                  A calmer tray suited for toggles, quick actions and inputs. Droplets group near corners, like condensation on real glass.
+                </p>
+                <div class="card-meta-row">
+                  <span class="card-tag">Controls-ready</span>
+                  <span>Buttons sit naturally</span>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATS -->
+      <section id="stats">
+        <div class="container">
+          <div class="section-header reveal">
+            <div class="eyebrow">Impact</div>
+            <h2 class="section-title">
+              What happens when <span>your UI feels physical.</span>
+            </h2>
+            <p class="section-subtitle">
+              Teams using GlassFlow-style surfaces consistently see better attention, higher perceived polish, and more time spent inside product.
+            </p>
+          </div>
+
+          <div class="stats-grid">
+            <article class="stat-card reveal">
+              <div class="stat-label">Perceived polish</div>
+              <div class="stat-value">+31%</div>
+              <div>Users describe the UI as “premium”, “OS-level” instead of “just a website”.</div>
+            </article>
+
+            <article class="stat-card reveal">
+              <div class="stat-label">Time on key screens</div>
+              <div class="stat-value">+18%</div>
+              <div>Glass hero and metric cards hold attention longer than flat panels.</div>
+            </article>
+
+            <article class="stat-card reveal">
+              <div class="stat-label">Prototype to ship</div>
+              <div class="stat-value">2.4×</div>
+              <div>Faster to reach “this looks real” without a full design team pass.</div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOW IT WORKS -->
+      <section>
+        <div class="container">
+          <div class="section-header reveal">
+            <div class="eyebrow">How it works</div>
+            <h2 class="section-title">
+              From blank canvas to <span>matte glass layout</span> in a day.
+            </h2>
+            <p class="section-subtitle">
+              No new framework. Just a set of well-behaved HTML sections, frosted glass tokens and motion hooks.
+            </p>
+          </div>
+
+          <div class="how-grid">
+            <div class="steps">
+              <div class="step reveal">
+                <div class="step-index">01</div>
+                <div>
+                  <div class="step-title">Drop in the layout</div>
+                  <div>
+                    Start with this single file. Swap the text and links, keep the hero, features, stats and pricing structure.
+                  </div>
+                </div>
+              </div>
+
+              <div class="step reveal">
+                <div class="step-index">02</div>
+                <div>
+                  <div class="step-title">Wire your content</div>
+                  <div>
+                    Replace placeholder copy and logos with your own. Buttons use simple classes, no JS framework required.
+                  </div>
+                </div>
+              </div>
+
+              <div class="step reveal">
+                <div class="step-index">03</div>
+                <div>
+                  <div class="step-title">Tune droplets & glow</div>
+                  <div>
+                    Adjust droplet positions, blur and color accents. The glass system is controlled by CSS variables only.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <aside class="how-panel reveal">
+              <div class="how-label">Spin-up snapshot</div>
+              <div class="how-main">
+                <div>
+                  <div class="how-number">1 day</div>
+                  <div>
+                    Typical time to go from flat wireframe to a matte glass landing that feels like a product, not a draft.
+                  </div>
+                </div>
+                <div class="how-pill">No build tools needed</div>
+              </div>
+              <div class="how-progress">
+                <div class="how-progress-fill"></div>
+              </div>
+              <p style="margin-top:0.7rem;">
+                Once you’re live, you can move this into your framework of choice — or keep it as a static marketing surface.
+              </p>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMPARISON -->
+      <section>
+        <div class="container">
+          <div class="section-header reveal">
+            <div class="eyebrow">Before & after</div>
+            <h2 class="section-title">
+              Flat layouts vs <span>water-glass surfaces.</span>
+            </h2>
+            <p class="section-subtitle">
+              Same content, different feeling. One looks like another template. The other feels like a product.
+            </p>
+          </div>
+
+          <div class="compare-grid">
+            <article class="compare-card reveal">
+              <div class="compare-label">Flat layout</div>
+              <div class="compare-title">Looks “website-standard”.</div>
+              <ul class="compare-list">
+                <li>
+                  <span class="compare-bullet bad"></span>
+                  <span>Hard edges, low depth, everything sits on the same visual layer.</span>
+                </li>
+                <li>
+                  <span class="compare-bullet bad"></span>
+                  <span>Cards compete with background gradients and imagery.</span>
+                </li>
+                <li>
+                  <span class="compare-bullet bad"></span>
+                  <span>Users can’t tell what is interactive vs decorative.</span>
+                </li>
+              </ul>
+            </article>
+
+            <article class="compare-card reveal">
+              <div class="compare-label">GlassFlow layout</div>
+              <div class="compare-title">Feels like part of an OS.</div>
+              <ul class="compare-list">
+                <li>
+                  <span class="compare-bullet good"></span>
+                  <span>Matte black base with floating glass panels and soft, layered depth.</span>
+                </li>
+                <li>
+                  <span class="compare-bullet good"></span>
+                  <span>Droplets, glow and tilt hint at a physical object under the cursor.</span>
+                </li>
+                <li>
+                  <span class="compare-bullet good"></span>
+                  <span>Interactive elements sit on dedicated, frosted surfaces.</span>
+                </li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- TESTIMONIALS -->
+      <section>
+        <div class="container">
+          <div class="section-header reveal">
+            <div class="eyebrow">Teams</div>
+            <h2 class="section-title">
+              Matte black, <span>sharp reactions.</span>
+            </h2>
+            <p class="section-subtitle">
+              A few notes from teams that plugged this glass system into their prototypes and launch sites.
+            </p>
+          </div>
+
+          <div class="testimonials-grid">
+            <article class="testimonial reveal">
+              <div class="testimonial-quote">
+                “We swapped our old hero for this glass version and people kept asking what OS it was. That’s exactly the reaction we wanted.”
+              </div>
+              <div class="testimonial-footer">
+                <div class="testimonial-avatar"></div>
+                <div class="testimonial-meta">
+                  <div class="testimonial-name">Amrita Kulkarni</div>
+                  <div class="testimonial-role">Design Lead · AI tooling</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="testimonial reveal">
+              <div class="testimonial-quote">
+                “The droplets and tilt are subtle, but they make everything feel touchable — like the UI has weight and softness.”
+              </div>
+              <div class="testimonial-footer">
+                <div class="testimonial-avatar"></div>
+                <div class="testimonial-meta">
+                  <div class="testimonial-name">Jonas Meyer</div>
+                  <div class="testimonial-role">Founder · Studio</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="testimonial reveal">
+              <div class="testimonial-quote">
+                “It took us a weekend to wire our content into this layout and it instantly looked like a product, not a slide.”
+              </div>
+              <div class="testimonial-footer">
+                <div class="testimonial-avatar"></div>
+                <div class="testimonial-meta">
+                  <div class="testimonial-name">Lisa Romero</div>
+                  <div class="testimonial-role">PM · Developer tools</div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRICING -->
+      <section id="pricing">
+        <div class="container">
+          <div class="section-header reveal">
+            <div class="eyebrow">Pricing</div>
+            <h2 class="section-title">
+              Start with the file, <span>grow into a system.</span>
+            </h2>
+            <p class="section-subtitle">
+              Keep it as a one-off landing, or turn the glass tokens into your design system foundation.
+            </p>
+          </div>
+
+          <div class="pricing-grid">
+            <article class="pricing-card reveal">
+              <div class="pricing-label">Starter</div>
+              <div class="pricing-name">Single page</div>
+              <div class="pricing-price">
+                Free <span>/ for personal use</span>
+              </div>
+              <div>
+                Use this layout as a personal homepage, concept demo or portfolio hero.
+              </div>
+              <ul class="pricing-list">
+                <li>All sections included</li>
+                <li>Theme toggle (Cyan / Orange)</li>
+                <li>Glass & droplet CSS tokens</li>
+              </ul>
+              <div class="pricing-cta">
+                <button class="btn btn-ghost">Download HTML</button>
+              </div>
+            </article>
+
+            <article class="pricing-card highlight reveal">
+              <div class="pricing-label">Teams</div>
+              <div class="pricing-name">Product surface</div>
+              <div class="pricing-price">
+                $180 <span>/ one-time</span>
+              </div>
+              <div>
+                Wire this into your actual product shell with handoff docs and variant examples.
+              </div>
+              <ul class="pricing-list">
+                <li>Figma tokens + variants</li>
+                <li>React / Vue snippets</li>
+                <li>Usage & motion guidelines</li>
+              </ul>
+              <div class="pricing-cta">
+                <button class="btn btn-primary">Request team license</button>
+              </div>
+            </article>
+
+            <article class="pricing-card reveal">
+              <div class="pricing-label">Custom</div>
+              <div class="pricing-name">OS surface</div>
+              <div class="pricing-price">
+                Let’s talk <span>/ project</span>
+              </div>
+              <div>
+                Want your own droplet language, motion profile and glass palette? We can design it together.
+              </div>
+              <ul class="pricing-list">
+                <li>Custom droplet & cube shapes</li>
+                <li>Bespoke background systems</li>
+                <li>Review with your design team</li>
+              </ul>
+              <div class="pricing-cta">
+                <button class="btn btn-ghost">Book a call</button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta" id="cta">
+        <div class="container">
+          <div class="cta-inner reveal">
+            <div>
+              <h2 class="cta-title">
+                Ready for your site to feel like a product, not a slide?
+              </h2>
+              <p class="cta-text">
+                Start from this matte glass baseline, plug in your own brand, and ship a landing that feels like a piece of the future.
+              </p>
+              <div class="cta-actions">
+                <button class="btn btn-primary">Get the starter file</button>
+                <button class="btn btn-ghost">Copy CSS tokens</button>
+              </div>
+            </div>
+
+            <div class="cta-right">
+              <div class="cta-stat">
+                <span>0</span>
+                <small>framework lock-in</small>
+              </div>
+              <div class="cta-stat">
+                <span>3</span>
+                <small>ready-made glass surfaces</small>
+              </div>
+              <p class="cta-note">
+                Works anywhere you can paste HTML, CSS and a little JS — from local prototypes to production apps.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="container">
+        <div class="footer-inner">
+          <span>© 2025 GlassFlow. Matte black, softened edges.</span>
+          <div class="footer-links">
+            <a href="#hero">Back to top</a>
+            <a href="#">Changelog</a>
+            <a href="#">License</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // THEME TOGGLE
+    const themeToggle = document.getElementById("theme-toggle");
+    const body = document.body;
+    const leftLabel = document.querySelector(".theme-left");
+    const rightLabel = document.querySelector(".theme-right");
+
+    function updateThemeLabels() {
+      const orange = body.classList.contains("theme-orange");
+      if (orange) {
+        leftLabel.classList.remove("active");
+        rightLabel.classList.add("active");
+      } else {
+        rightLabel.classList.remove("active");
+        leftLabel.classList.add("active");
+      }
+    }
+
+    if (themeToggle) {
+      themeToggle.addEventListener("click", () => {
+        body.classList.toggle("theme-orange");
+        updateThemeLabels();
+      });
+      updateThemeLabels();
+    }
+
+    // 3D tilt (hero panel + cards)
+    function attachTilt(el, strength) {
+      if (!el) return;
+      const maxTilt = strength || 8;
+
+      el.addEventListener("mousemove", (e) => {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - (rect.left + rect.width / 2);
+        const y = e.clientY - (rect.top + rect.height / 2);
+        const rx = (y / rect.height) * -maxTilt;
+        const ry = (x / rect.width) * maxTilt;
+
+        el.style.transform =
+          `translateY(-4px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      });
+
+      el.addEventListener("mouseleave", () => {
+        el.style.transform = "translateY(0) rotateX(0deg) rotateY(0deg)";
+      });
+    }
+
+    const tiltTargets = document.querySelectorAll("[data-tilt]");
+    tiltTargets.forEach((el) => {
+      const strength = parseFloat(el.getAttribute("data-tilt")) || 8;
+      attachTilt(el, strength);
+    });
+
+    document.querySelectorAll(".glass-card").forEach((card) => {
+      attachTilt(card, 7);
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll(".reveal");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    reveals.forEach((el) => observer.observe(el));
+  </script>
+</body>
+</html>
