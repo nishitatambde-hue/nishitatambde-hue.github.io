@@ -1027,16 +1027,69 @@
       color: var(--fg-muted);
       margin-bottom: 0.7rem;
     }
-
     .build-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 999px;
-      margin-bottom: 0.5rem;
-      background: radial-gradient(circle at 30% 20%, #ffffff, var(--accent-strong));
-      box-shadow: 0 0 18px var(--accent-soft);
-      animation: neon 3s infinite ease-in-out;
+        width: 24px;
+        height: 24px;
+        margin-bottom: 0.65rem;
+
+        /* Gear base circle */
+        background: linear-gradient(145deg, #18181b, #0f0f10);
+        border-radius: 50%;
+        position: relative;
+
+        border: 2px solid rgba(255,255,255,0.06);
+        box-shadow:
+            inset 0 2px 4px rgba(255,255,255,0.04),
+            inset 0 -2px 4px rgba(0,0,0,0.45),
+            0 2px 6px rgba(0,0,0,0.55);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        animation: gearPulse 4s ease-in-out infinite;
     }
+
+    /* Gear teeth */
+    .build-icon::before,
+    .build-icon::after {
+        content: "";
+        position: absolute;
+        inset: -6px;
+        border-radius: 50%;
+        border: 6px solid transparent;
+        border-top-color: rgba(255,255,255,0.08);
+        border-bottom-color: rgba(255,255,255,0.08);
+        border-left-color: rgba(0,0,0,0.45);
+        border-right-color: rgba(0,0,0,0.45);
+        transform: rotate(45deg);
+        pointer-events: none;
+    }
+
+    /* 2nd teeth layer for depth */
+    .build-icon::after {
+        inset: -10px;
+        opacity: 0.18;
+        transform: rotate(0deg);
+    }
+
+    /* Inner gear hole */
+    .build-icon .gear-center {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: linear-gradient(145deg, #0d0d0f, #111111);
+        box-shadow:
+            inset 0 2px 4px rgba(255,255,255,0.05),
+            inset 0 -2px 4px rgba(0,0,0,0.45);
+    }
+
+    /* subtle breathing motion */
+    @keyframes gearPulse {
+        0%, 100% { transform: scale(1); }
+        50%      { transform: scale(1.04); }
+    }
+
 
     /* your neon keyframes, adapted to theme colors */
     @keyframes neon {
@@ -1066,15 +1119,54 @@
       border: 1px solid rgba(31,41,55,0.9);
     }
 
+    /* YOUTUBE TIMELINE — neon glow render bar */
     .progress-line {
       position: relative;
-      width: 0%;
-      height: 4px;
+      width: 100%;
+      height: 6px;
       border-radius: 999px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-strong));
-      box-shadow: 0 0 14px var(--accent-soft);
       overflow: hidden;
+      background: rgba(15, 23, 42, 0.95);
+      box-shadow:
+        0 0 0 1px rgba(15, 23, 42, 1),
+        0 10px 30px rgba(0, 0, 0, 1);
     }
+
+    .progress-line::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: repeating-linear-gradient(
+        to right,
+        rgba(148, 163, 184, 0.14) 0,
+        rgba(148, 163, 184, 0.14) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      opacity: 0.35;
+      mix-blend-mode: soft-light;
+    }
+
+    .progress-line::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      transform-origin: left center;
+      transform: scaleX(var(--progress, 0));
+      background: linear-gradient(
+        90deg,
+        #ef4444,
+        #f97316,
+        var(--accent)
+      );
+      box-shadow:
+        0 0 20px rgba(239, 68, 68, 0.6),
+        0 0 32px rgba(34, 211, 238, 0.7);
+      transition: transform 3.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
 
     .pipe-net {
       width: 100%;
@@ -1477,11 +1569,20 @@
 
             <!-- YOUTUBE AUTOMATION -->
             <div class="build-card holo-reflect scan-lines reveal">
-              <div class="build-icon yt-bar"></div>
-              <h3>🎬 YouTube Automation</h3>
-              <p>Timeline bar animates like a cut preview — simulating auto-editing and rendering cycles.</p>
-              <div class="progress-line"></div>
+                <div class="build-icon yt-bar"></div>
+                <h3>🎬 YouTube Automation</h3>
+                <p>Multi-stage pipeline: fetching → transcribing → editing → publishing.</p>
+
+                <div class="yt-stages">
+                    <div class="yt-stage" data-label="fetching"></div>
+                    <div class="yt-stage" data-label="transcribing"></div>
+                    <div class="yt-stage" data-label="editing"></div>
+                    <div class="yt-stage" data-label="publishing"></div>
+                </div>
+
+                <div class="progress-line"></div>
             </div>
+
 
             <!-- CODE AUTOMATION -->
             <div class="build-card holo-reflect scan-lines reveal">
@@ -1771,42 +1872,99 @@
     );
     reveals.forEach((el) => observer.observe(el));
 
-    // VOICE WAVE
+    // VOICE AUTOMATION — audio-style bar visualizer (always running)
     document.querySelectorAll(".wave-canvas").forEach((canvas) => {
-      const ctx = canvas.getContext("2d");
-      let t = 0;
+        const ctx = canvas.getContext("2d");
 
-      function draw() {
-        const width = canvas.width;
-        const height = canvas.height;
-        ctx.clearRect(0, 0, width, height);
-        ctx.beginPath();
-        ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue("--accent").trim();
-        ctx.lineWidth = 2;
-
-        for (let x = 0; x < width; x++) {
-          let y = height / 2 + Math.sin((x + t) * 0.04) * 20;
-          ctx.lineTo(x, y);
+        function resize() {
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
         }
-        ctx.stroke();
-        t += 2;
-        requestAnimationFrame(draw);
-      }
-      draw();
+        resize();
+        window.addEventListener("resize", resize);
+
+        const barCount = 40;
+        let bars = new Array(barCount).fill(0).map(() => Math.random());
+
+        function draw() {
+            const w = canvas.width;
+            const h = canvas.height;
+            if (!w || !h) return;
+
+            ctx.clearRect(0, 0, w, h);
+
+            const accent =
+                getComputedStyle(document.body).getPropertyValue("--accent").trim() || "#22d3ee";
+
+            const barWidth = w / barCount;
+            const maxHeight = h * 0.8;
+
+            // vertical gradient for bars
+            const grad = ctx.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, accent);
+            grad.addColorStop(1, "rgba(34,211,238,0.1)");
+
+            for (let i = 0; i < barCount; i++) {
+                // smooth random target for “audio-like” motion
+                const target = Math.random();
+                bars[i] += (target - bars[i]) * 0.12; // easing
+                const barHeight = 4 + bars[i] * maxHeight;
+
+                const x = i * barWidth + barWidth * 0.2;
+                const y = (h - barHeight) / 2; // vertically centered
+                const bw = barWidth * 0.6;
+                const radius = Math.min(barWidth * 0.3, barHeight / 2);
+
+                // rounded vertical bar
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.moveTo(x, y + radius);
+                ctx.arcTo(x, y, x + bw, y, radius);
+                ctx.arcTo(x + bw, y, x + bw, y + barHeight, radius);
+                ctx.arcTo(x + bw, y + barHeight, x, y + barHeight, radius);
+                ctx.arcTo(x, y + barHeight, x, y, radius);
+                ctx.closePath();
+                ctx.fill();
+
+                // soft glow
+                ctx.save();
+                ctx.shadowColor = accent;
+                ctx.shadowBlur = 8;
+                ctx.globalAlpha = 0.35;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
     });
 
-    // YOUTUBE TIMELINE
+    // YOUTUBE TIMELINE — neon glow render bar
     document.querySelectorAll(".progress-line").forEach((bar) => {
-      bar.style.width = "0%";
-      setInterval(() => {
-        bar.style.transition = "width 3s linear";
-        bar.style.width = "100%";
-        setTimeout(() => {
-          bar.style.transition = "none";
-          bar.style.width = "0%";
-        }, 3000);
-      }, 4000);
+        const duration = 3800;  // ms for one render sweep
+        const pause = 700;      // pause before restarting
+
+        function runSweep() {
+            // reset to 0 instantly (no anim)
+            bar.style.setProperty("--progress", "0");
+
+            // small delay so the reset is applied before anim
+            setTimeout(() => {
+                bar.style.setProperty("--progress", "1");
+            }, 40);
+        }
+
+        // initial start
+        runSweep();
+
+        // loop
+        setInterval(() => {
+            runSweep();
+        }, duration + pause);
     });
+
 
     // MATRIX CODE RAIN — always running (no hover needed)
     document.querySelectorAll(".matrix-canvas").forEach((canvas) => {
@@ -1841,7 +1999,7 @@
                 // Reset drop randomly when below screen
                 if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
 
-                drops[i]++;
+                drops[i] += 0.5; 
             }
 
             requestAnimationFrame(drawMatrix);
@@ -1851,48 +2009,434 @@
     });
 
 
-    // API PIPES
+    // API PIPELINE — more "real" pipeline look with elbows + joints
     document.querySelectorAll(".pipe-net").forEach((svg) => {
-      svg.setAttribute("viewBox", "0 0 270 60");
-      svg.innerHTML = `
-        <line x1="10" y1="20" x2="260" y2="20" stroke="rgba(148,163,184,0.8)" stroke-width="3" stroke-linecap="round" />
-        <circle cx="10" cy="20" r="4" fill="currentColor" class="dot"/>
-      `;
-      const dot = svg.querySelector(".dot");
-      function animateDot() {
-        dot.animate(
-          [{ transform: "translateX(0px)" }, { transform: "translateX(250px)" }],
-          { duration: 2000, iterations: Infinity, easing: "ease-in-out" }
+        const NS = "http://www.w3.org/2000/svg";
+
+        const width = 270;
+        const height = 80;
+        svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+        svg.innerHTML = ""; // clear anything old
+
+        // Colors from CSS accent
+        const accent =
+            getComputedStyle(document.body).getPropertyValue("--accent").trim() || "#22d3ee";
+
+        // Pipe colors (base + highlight for "3D" look)
+        const pipeBase = "#0f172a";       // dark steel
+        const pipeHighlight = "#94a3b8";  // light edge
+
+        // ---- DEFS: glow for packets ----
+        const defs = document.createElementNS(NS, "defs");
+        defs.innerHTML = `
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        `;
+        svg.appendChild(defs);
+
+        // ---- HELPERS ----
+        function makeLine(x1, y1, x2, y2) {
+            // base
+            const base = document.createElementNS(NS, "line");
+            base.setAttribute("x1", x1);
+            base.setAttribute("y1", y1);
+            base.setAttribute("x2", x2);
+            base.setAttribute("y2", y2);
+            base.setAttribute("stroke", pipeBase);
+            base.setAttribute("stroke-width", "7");
+            base.setAttribute("stroke-linecap", "round");
+            svg.appendChild(base);
+
+            // highlight
+            const hi = document.createElementNS(NS, "line");
+            hi.setAttribute("x1", x1);
+            hi.setAttribute("y1", y1);
+            hi.setAttribute("x2", x2);
+            hi.setAttribute("y2", y2);
+            hi.setAttribute("stroke", pipeHighlight);
+            hi.setAttribute("stroke-width", "3");
+            hi.setAttribute("stroke-linecap", "round");
+            hi.setAttribute("opacity", "0.9");
+            svg.appendChild(hi);
+
+            return { base, hi };
+        }
+
+        function makePath(d) {
+            const base = document.createElementNS(NS, "path");
+            base.setAttribute("d", d);
+            base.setAttribute("fill", "none");
+            base.setAttribute("stroke", pipeBase);
+            base.setAttribute("stroke-width", "7");
+            base.setAttribute("stroke-linecap", "round");
+            base.setAttribute("stroke-linejoin", "round");
+            svg.appendChild(base);
+
+            const hi = document.createElementNS(NS, "path");
+            hi.setAttribute("d", d);
+            hi.setAttribute("fill", "none");
+            hi.setAttribute("stroke", pipeHighlight);
+            hi.setAttribute("stroke-width", "3");
+            hi.setAttribute("stroke-linecap", "round");
+            hi.setAttribute("stroke-linejoin", "round");
+            hi.setAttribute("opacity", "0.9");
+            svg.appendChild(hi);
+
+            return { base, hi };
+        }
+
+        function makeJoint(x, y) {
+            const outer = document.createElementNS(NS, "circle");
+            outer.setAttribute("cx", x);
+            outer.setAttribute("cy", y);
+            outer.setAttribute("r", 6.5);
+            outer.setAttribute("fill", "#020617");
+            outer.setAttribute("stroke", pipeBase);
+            outer.setAttribute("stroke-width", "3");
+            svg.appendChild(outer);
+
+            const inner = document.createElementNS(NS, "circle");
+            inner.setAttribute("cx", x);
+            inner.setAttribute("cy", y);
+            inner.setAttribute("r", 3.5);
+            inner.setAttribute("fill", pipeHighlight);
+            inner.setAttribute("stroke", pipeBase);
+            inner.setAttribute("stroke-width", "1.5");
+            inner.setAttribute("opacity", "0.9");
+            svg.appendChild(inner);
+        }
+
+        function makeEndCap(x, y) {
+            const cap = document.createElementNS(NS, "rect");
+            cap.setAttribute("x", x - 2);
+            cap.setAttribute("y", y - 7);
+            cap.setAttribute("width", 4);
+            cap.setAttribute("height", 14);
+            cap.setAttribute("rx", 2);
+            cap.setAttribute("fill", pipeBase);
+            svg.appendChild(cap);
+        }
+
+        function makePacket(radius) {
+            const c = document.createElementNS(NS, "circle");
+            c.setAttribute("r", radius);
+            c.setAttribute("fill", accent);
+            c.setAttribute("filter", "url(#glow)");
+            svg.appendChild(c);
+            return c;
+        }
+
+        // ---- PIPE GEOMETRY ----
+
+        // main horizontal pipe
+        const mainStartX = 20;
+        const mainEndX = 250;
+        const mainY = 30;
+        makeLine(mainStartX, mainY, mainEndX, mainY);
+
+        // tee positions
+        const leftTeeX = 90;
+        const rightTeeX = 170;
+
+        // end caps (visual ends of pipeline)
+        makeEndCap(mainStartX, mainY);
+        makeEndCap(mainEndX, mainY);
+
+        // L-shaped branches (90° elbows)
+        const branchVertOffset = 12;
+        const branchHorizLen = 45;
+
+        makePath(`M ${leftTeeX} ${mainY} V ${mainY - branchVertOffset} H ${leftTeeX + branchHorizLen}`);
+        makePath(`M ${leftTeeX} ${mainY} V ${mainY + branchVertOffset} H ${leftTeeX + branchHorizLen}`);
+        makePath(`M ${rightTeeX} ${mainY} V ${mainY - branchVertOffset} H ${rightTeeX + branchHorizLen}`);
+        makePath(`M ${rightTeeX} ${mainY} V ${mainY + branchVertOffset} H ${rightTeeX + branchHorizLen}`);
+
+        makeJoint(leftTeeX, mainY);
+        makeJoint(rightTeeX, mainY);
+
+        // retry loop U-shape
+        const loopTopY = 38;
+        const loopBottomY = 60;
+        const loopLeftX = 135;
+        const loopRightX = 155;
+
+        makePath(
+            `M ${loopLeftX} ${loopTopY}
+             V ${loopBottomY - 5}
+             A 5 5 0 0 0 ${loopLeftX + 5} ${loopBottomY}
+             H ${loopRightX - 5}
+             A 5 5 0 0 0 ${loopRightX} ${loopBottomY - 5}
+             V ${loopTopY}`
         );
-      }
-      animateDot();
+
+        // ---- PACKETS ----
+        const packets = [];
+
+        for (let i = 0; i < 3; i++) {
+            const p = makePacket(4);
+            packets.push({
+                el: p,
+                t: Math.random(),
+                speed: 0.0018 + Math.random() * 0.001,
+                path: (t) => ({
+                    x: mainStartX + (mainEndX - mainStartX) * t,
+                    y: mainY,
+                }),
+            });
+        }
+
+        function makeBranchPath(jX, jY, direction, horizLen, vertOffset) {
+            const total = horizLen + vertOffset;
+            return (t) => {
+                const s = t * total;
+                if (s <= vertOffset) {
+                    return {
+                        x: jX,
+                        y: jY + (direction === "up" ? -s : s),
+                    };
+                }
+                const s2 = s - vertOffset;
+                return {
+                    x: jX + s2,
+                    y: jY + (direction === "up" ? -vertOffset : vertOffset),
+                };
+            };
+        }
+
+        [
+            { x: leftTeeX, y: mainY, dir: "up" },
+            { x: leftTeeX, y: mainY, dir: "down" },
+            { x: rightTeeX, y: mainY, dir: "up" },
+            { x: rightTeeX, y: mainY, dir: "down" },
+        ].forEach((b) => {
+            const p = makePacket(3.5);
+            packets.push({
+                el: p,
+                t: Math.random(),
+                speed: 0.0022 + Math.random() * 0.0012,
+                path: makeBranchPath(b.x, b.y, b.dir, branchHorizLen, branchVertOffset),
+            });
+        });
+
+        // retry loop packet
+        const retryPacket = makePacket(3.5);
+        packets.push({
+            el: retryPacket,
+            t: Math.random(),
+            speed: 0.0025,
+            path: (t) => {
+                const d1 = loopBottomY - 5 - loopTopY;
+                const d2 = 10;
+                const d3 = loopRightX - loopLeftX - 10;
+                const total = d1 * 2 + d2 + d3;
+
+                let s = t * total;
+
+                if (s <= d1) return { x: loopLeftX, y: loopTopY + s };
+                s -= d1;
+
+                if (s <= d2 / 2) {
+                    const a = Math.PI + (Math.PI / 2) * (s / (d2 / 2));
+                    const cx = loopLeftX + 5;
+                    const cy = loopBottomY - 5;
+                    return { x: cx + Math.cos(a) * 5, y: cy + Math.sin(a) * 5 };
+                }
+                s -= d2 / 2;
+
+                if (s <= d3) return { x: loopLeftX + 5 + s, y: loopBottomY };
+                s -= d3;
+
+                if (s <= d2 / 2) {
+                    const a = (Math.PI / 2) + (Math.PI / 2) * (s / (d2 / 2));
+                    const cx = loopRightX - 5;
+                    const cy = loopBottomY - 5;
+                    return { x: cx + Math.cos(a) * 5, y: cy + Math.sin(a) * 5 };
+                }
+                s -= d2 / 2;
+
+                if (s <= d1) return { x: loopRightX, y: loopBottomY - 5 - s };
+
+                return { x: loopRightX, y: loopTopY };
+            },
+        });
+
+        function animate() {
+            packets.forEach((p) => {
+                p.t += p.speed;
+                if (p.t > 1) p.t = 0;
+                const pos = p.path(p.t);
+                p.el.setAttribute("cx", pos.x);
+                p.el.setAttribute("cy", pos.y);
+            });
+            requestAnimationFrame(animate);
+        }
+
+        animate();
     });
 
-    // TTS WAVEFORM
+
+
+
+
+    // TTS/STT/CLONING — 3-stage pipeline waveform
     document.querySelectorAll(".tts-wave").forEach((canvas) => {
-      const ctx = canvas.getContext("2d");
-      canvas.width = canvas.clientWidth;
-      canvas.height = canvas.clientHeight;
-      let t = 0;
+        const ctx = canvas.getContext("2d");
 
-      function draw() {
-        const w = canvas.width;
-        const h = canvas.height;
-        ctx.clearRect(0,0,w,h);
-        ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue("--accent").trim();
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-
-        for (let x = 0; x < w; x++) {
-          let y = h/2 + Math.sin((x+t)*0.05)* (h/3) * Math.cos(t*0.01);
-          ctx.lineTo(x,y);
+        function resize() {
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
         }
-        ctx.stroke();
+        resize();
+        window.addEventListener("resize", resize);
 
-        t += 2;
-        requestAnimationFrame(draw);
-      }
-      draw();
+        let t = 0;
+
+        function draw() {
+            const w = canvas.width;
+            const h = canvas.height;
+            if (!w || !h) return;
+
+            ctx.clearRect(0, 0, w, h);
+
+            const accent =
+                getComputedStyle(document.body).getPropertyValue("--accent").trim() || "#22d3ee";
+            const accentAlt =
+                getComputedStyle(document.body).getPropertyValue("--accent-alt-strong").trim() || "#f59e0b";
+
+            // background subtle gradient
+            const bgGrad = ctx.createLinearGradient(0, 0, w, h);
+            bgGrad.addColorStop(0, "rgba(15,23,42,0.9)");
+            bgGrad.addColorStop(1, "rgba(2,6,23,1)");
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, w, h);
+
+            const midY = h / 2;
+
+            // Stage boundaries (3 segments)
+            const stageWidth = w / 3;
+
+            // helper to pick style by stage
+            function getStageParams(x) {
+                if (x < stageWidth) {
+                    // Stage 1: raw text (noisy, jittery)
+                    return {
+                        amp: h * 0.25,
+                        freq: 0.25,
+                        noise: 0.7,
+                        color: "rgba(148,163,184,0.9)",
+                    };
+                } else if (x < stageWidth * 2) {
+                    // Stage 2: cleaned text (more regular)
+                    return {
+                        amp: h * 0.3,
+                        freq: 0.18,
+                        noise: 0.3,
+                        color: accentAlt,
+                    };
+                } else {
+                    // Stage 3: voiced/exported (smooth, strong waveform)
+                    return {
+                        amp: h * 0.35,
+                        freq: 0.12,
+                        noise: 0.15,
+                        color: accent,
+                    };
+                }
+            }
+
+            // Draw main pipeline waveform
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            for (let x = 0; x < w; x++) {
+                const stage = getStageParams(x);
+                const progress = x / w;
+
+                // base sin wave + slight t shift
+                let y =
+                    Math.sin((x * stage.freq + t * 0.08) * 0.12) *
+                    stage.amp;
+
+                // add local noise for roughness differences
+                const jitter = (Math.random() - 0.5) * stage.noise * h * 0.08;
+                y += jitter;
+
+                const yPos = midY + y * 0.7;
+
+                if (x === 0) {
+                    ctx.moveTo(x, yPos);
+                } else {
+                    ctx.lineTo(x, yPos);
+                }
+            }
+
+            // gradient across whole pipeline
+            const pipeGrad = ctx.createLinearGradient(0, 0, w, 0);
+            pipeGrad.addColorStop(0, "rgba(148,163,184,0.9)");
+            pipeGrad.addColorStop(0.33, accentAlt);
+            pipeGrad.addColorStop(0.66, accent);
+            pipeGrad.addColorStop(1, accent);
+            ctx.strokeStyle = pipeGrad;
+            ctx.stroke();
+
+            // subtle glow overlay
+            ctx.save();
+            ctx.globalAlpha = 0.3;
+            ctx.shadowColor = accent;
+            ctx.shadowBlur = 12;
+            ctx.stroke();
+            ctx.restore();
+
+            // stage separators (thin vertical markers)
+            ctx.save();
+            ctx.strokeStyle = "rgba(148,163,184,0.35)";
+            ctx.lineWidth = 1;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(stageWidth, 8);
+            ctx.lineTo(stageWidth, h - 8);
+            ctx.moveTo(stageWidth * 2, 8);
+            ctx.lineTo(stageWidth * 2, h - 8);
+            ctx.stroke();
+            ctx.restore();
+
+            // moving "packet" dot flowing through stages
+            const flowPos = ((t * 0.8) % w);
+            const flowStage = getStageParams(flowPos);
+
+            // sample waveform y at flowPos (approx)
+            const baseY =
+                Math.sin((flowPos * flowStage.freq + t * 0.08) * 0.12) *
+                flowStage.amp;
+            const flowY = midY + baseY * 0.7;
+
+            ctx.save();
+            ctx.fillStyle = flowStage.color;
+            ctx.shadowColor = flowStage.color;
+            ctx.shadowBlur = 18;
+            ctx.beginPath();
+            ctx.arc(flowPos, flowY, 4.2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // labels hinting pipeline stages (very subtle, optional)
+            ctx.font = "10px Inter, system-ui, sans-serif";
+            ctx.fillStyle = "rgba(148,163,184,0.7)";
+            ctx.textAlign = "center";
+            ctx.fillText("raw text", stageWidth * 0.5, h - 6);
+            ctx.fillText("cleaned", stageWidth * 1.5, h - 6);
+            ctx.fillText("voiced", stageWidth * 2.5, h - 6);
+
+            t += 1.6;
+            requestAnimationFrame(draw);
+        }
+
+        draw();
     });
   </script>
 </body>
