@@ -22,6 +22,7 @@
       --accent-soft: rgba(34, 211, 238, 0.4);
 
       --accent-alt: #fbbf24;
+      --accent-alt-strong: #f59e0b;
       --accent-alt-soft: rgba(251, 191, 36, 0.35);
 
       --glass-bg: rgba(15, 23, 42, 0.9);
@@ -54,6 +55,7 @@
         radial-gradient(circle at top, #020617 0, #000 55%, #000 100%);
       color: var(--fg);
       overflow-x: hidden;
+      cursor: none;
     }
 
     a {
@@ -130,8 +132,8 @@
     /* CUSTOM CURSOR */
 
     .cursor-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 999px;
       background: var(--accent);
       position: fixed;
@@ -141,16 +143,25 @@
     }
 
     .cursor-ring {
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       border-radius: 999px;
       border: 2px solid var(--accent-soft);
       position: fixed;
       pointer-events: none;
       z-index: 9998;
-      transform: translate(-50%, -50%);
-      transition: transform 0.16s ease-out, border-color 0.16s ease-out, opacity 0.16s ease-out;
-      opacity: 0.8;
+      transform: translate(-50%, -50%) scale(1);
+      transition:
+        transform 0.16s ease-out,
+        border-color 0.16s ease-out,
+        opacity 0.16s ease-out;
+      opacity: 0.85;
+    }
+
+    .cursor-ring.cursor-hover {
+      transform: translate(-50%, -50%) scale(1.4);
+      border-color: var(--accent-strong);
+      opacity: 1;
     }
 
     /* HEADER / NAV */
@@ -391,6 +402,23 @@
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--fg-muted);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-pill::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.16), transparent);
+      transform: translateX(-120%);
+      animation: pillSweep 4s ease-in-out infinite;
+    }
+
+    @keyframes pillSweep {
+      0% { transform: translateX(-120%); }
+      30% { transform: translateX(130%); }
+      100% { transform: translateX(130%); }
     }
 
     .hero-dot {
@@ -399,6 +427,12 @@
       border-radius: 999px;
       background: radial-gradient(circle, var(--accent), var(--accent-strong));
       box-shadow: 0 0 12px var(--accent-strong);
+      animation: dotPulse 1.9s ease-in-out infinite;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.4); opacity: 1; }
     }
 
     .hero-title {
@@ -409,6 +443,7 @@
       opacity: 0;
       transform: translateY(18px);
       animation: fadeUp 0.9s ease-out forwards;
+      position: relative;
     }
 
     .hero-title span {
@@ -420,6 +455,51 @@
       );
       -webkit-background-clip: text;
       color: transparent;
+    }
+
+    .hero-title span.glitch {
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero-title span.glitch::before,
+    .hero-title span.glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      -webkit-background-clip: text;
+      color: transparent;
+      opacity: 0.6;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .hero-title span.glitch::before {
+      transform: translateX(-1px);
+      color: #22d3ee;
+      animation: glitchX 2.3s infinite ease-in-out;
+    }
+
+    .hero-title span.glitch::after {
+      transform: translateX(1px);
+      color: #f97316;
+      animation: glitchY 3s infinite ease-in-out;
+    }
+
+    @keyframes glitchX {
+      0%, 100% { transform: translateX(0); opacity: 0.3; }
+      10% { transform: translateX(-2px); opacity: 0.8; }
+      20% { transform: translateX(1px); opacity: 0.5; }
+      30% { transform: translateX(-1px); opacity: 0.6; }
+      40% { transform: translateX(0); opacity: 0.3; }
+    }
+
+    @keyframes glitchY {
+      0%, 100% { transform: translateY(0); opacity: 0.3; }
+      15% { transform: translateY(1px); opacity: 0.7; }
+      25% { transform: translateY(-1px); opacity: 0.5; }
+      35% { transform: translateY(0); opacity: 0.4; }
     }
 
     .hero-highlight {
@@ -484,40 +564,7 @@
       color: transparent;
     }
 
-    .hero-cli-chip {
-      margin-top: 2rem;
-      border-radius: 18px;
-      padding: 0.85rem 0.95rem;
-      background:
-        radial-gradient(circle at 0 0, rgba(148, 163, 184, 0.22), transparent 55%),
-        rgba(0, 0, 0, 0.92);
-      border: 1px solid rgba(55, 65, 81, 0.95);
-      box-shadow:
-        0 16px 36px rgba(0, 0, 0, 0.96),
-        0 0 24px var(--accent-soft);
-      font-size: 0.8rem;
-      max-width: 22rem;
-    }
-
-    .hero-cli-title {
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--fg-muted);
-      margin-bottom: 0.2rem;
-    }
-
-    .hero-cli-main {
-      font-weight: 500;
-      margin-bottom: 0.25rem;
-      color: var(--fg-soft);
-    }
-
-    .hero-cli-sub {
-      color: var(--fg-muted);
-    }
-
-    /* HERO RIGHT - HUD PANEL */
+    /* HERO RIGHT HUD + CLI CHIP */
 
     .hero-panel-wrap {
       border-radius: var(--radius-xl);
@@ -528,6 +575,8 @@
       box-shadow:
         0 26px 70px rgba(0, 0, 0, 0.96),
         0 0 40px rgba(0, 0, 0, 1);
+      position: relative;
+      overflow: hidden;
     }
 
     .hero-panel {
@@ -543,6 +592,38 @@
       overflow: hidden;
     }
 
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(
+        120deg,
+        rgba(255,255,255,0.08),
+        transparent,
+        rgba(255,255,255,0.08)
+      );
+      mix-blend-mode: soft-light;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.18), transparent 55%);
+      opacity: 0.45;
+      transform: translateY(-60%);
+      animation: panelScan 7s linear infinite;
+      mix-blend-mode: screen;
+    }
+
+    @keyframes panelScan {
+      0% { transform: translateY(-60%); }
+      50% { transform: translateY(40%); }
+      100% { transform: translateY(-60%); }
+    }
+
     .hero-panel-header {
       display: flex;
       align-items: center;
@@ -550,6 +631,8 @@
       font-size: 0.76rem;
       color: var(--fg-muted);
       margin-bottom: 1rem;
+      position: relative;
+      z-index: 2;
     }
 
     .hero-panel-title {
@@ -574,6 +657,12 @@
       border-radius: 999px;
       background: radial-gradient(circle, var(--accent), var(--accent-strong));
       box-shadow: 0 0 10px var(--accent-strong);
+      animation: statusBlink 1.6s ease-in-out infinite;
+    }
+
+    @keyframes statusBlink {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
     }
 
     .hero-panel-main {
@@ -581,6 +670,8 @@
       grid-template-columns: 3fr 2.1fr;
       gap: 1.2rem;
       align-items: center;
+      position: relative;
+      z-index: 2;
     }
 
     .hero-graph {
@@ -676,13 +767,48 @@
       margin-left: 0.3rem;
     }
 
-    /* STACK STRIP */
+    .hero-cli-chip {
+      margin-top: 1.4rem;
+      border-radius: 18px;
+      padding: 0.85rem 0.95rem;
+      background:
+        radial-gradient(circle at 0 0, rgba(148, 163, 184, 0.22), transparent 55%),
+        rgba(0, 0, 0, 0.92);
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      box-shadow:
+        0 16px 36px rgba(0, 0, 0, 0.96),
+        0 0 24px var(--accent-soft);
+      font-size: 0.8rem;
+      max-width: 22rem;
+    }
+
+    .hero-cli-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--fg-muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .hero-cli-main {
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+      color: var(--fg-soft);
+    }
+
+    .hero-cli-sub {
+      color: var(--fg-muted);
+    }
+
+    /* GLOBAL SECTIONS */
 
     section {
       padding: 3.4rem 0;
       position: relative;
       z-index: 2;
     }
+
+    /* STACK STRIP */
 
     .stack-strip {
       border-radius: 999px;
@@ -769,7 +895,240 @@
       color: var(--fg-muted);
     }
 
-    /* GLASS CARDS / AUTOMATIONS */
+    /* "WHAT I BUILD" SECTION */
+
+    .build-section {
+      padding-top: 3.8rem;
+    }
+
+    .build-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.6rem;
+    }
+
+    .build-card {
+      position: relative;
+      border-radius: 20px;
+      padding: 1.2rem 1.1rem 1.3rem;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.12), transparent 55%),
+        linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(0, 0, 0, 0.98));
+      border: 1px solid rgba(31, 41, 55, 0.96);
+      box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.98),
+        0 0 24px rgba(0, 0, 0, 1);
+      font-size: 0.86rem;
+      color: var(--fg-muted);
+      overflow: hidden;
+      transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+    }
+
+    .build-card:hover {
+      transform: translateY(-8px) scale(1.01);
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 1),
+        0 0 32px var(--accent-soft);
+      border-color: var(--accent-soft);
+    }
+
+    .build-icon {
+      font-size: 1.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .build-title {
+      font-size: 1rem;
+      color: var(--fg-soft);
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+
+    .build-body {
+      margin-bottom: 0.9rem;
+    }
+
+    .build-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--fg-muted);
+    }
+
+    .build-decor {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    /* Voice Automation — mic pulse + wave */
+
+    .build-card-voice .build-decor::before {
+      content: "";
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 999px;
+      top: -20px;
+      right: -10px;
+      background: radial-gradient(circle, rgba(34,211,238,0.6), transparent 60%);
+      opacity: 0.6;
+      filter: blur(3px);
+      animation: micPulseGlow 2.4s ease-in-out infinite;
+    }
+
+    @keyframes micPulseGlow {
+      0%,100% { transform: scale(0.9); opacity: 0.4; }
+      50% { transform: scale(1.15); opacity: 0.9; }
+    }
+
+    .build-card-voice .build-decor::after {
+      content: "";
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      bottom: 10px;
+      height: 26px;
+      background: repeating-linear-gradient(
+        to right,
+        rgba(148,163,184,0.18) 0 3px,
+        transparent 3px 6px
+      );
+      mask-image: linear-gradient(to right, transparent, #000 20%, #000 80%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, #000 20%, #000 80%, transparent);
+      animation: voiceWave 1.8s ease-in-out infinite;
+    }
+
+    @keyframes voiceWave {
+      0%,100% { transform: translateX(0); opacity: 0.7; }
+      50% { transform: translateX(10px); opacity: 1; }
+    }
+
+    /* YouTube Automation — timeline bar */
+
+    .build-card-yt .build-decor::before {
+      content: "";
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      bottom: 16px;
+      height: 3px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      box-shadow: 0 0 0 1px rgba(15,23,42,1);
+    }
+
+    .build-card-yt .build-decor::after {
+      content: "";
+      position: absolute;
+      left: 12%;
+      bottom: 16px;
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+      box-shadow: 0 0 12px var(--accent-soft);
+      animation: timelinePlay 2.6s ease-in-out infinite;
+    }
+
+    @keyframes timelinePlay {
+      0% { width: 10%; }
+      40% { width: 70%; }
+      55% { width: 75%; }
+      100% { width: 10%; }
+    }
+
+    /* Code Automation — code rain */
+
+    .build-card-code .build-decor::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to bottom, rgba(34,197,94,0.6), transparent),
+        linear-gradient(to bottom, rgba(148,163,184,0.35), transparent);
+      mix-blend-mode: soft-light;
+      opacity: 0.4;
+      background-size: 100% 40px;
+      animation: codeRain 2.8s linear infinite;
+    }
+
+    @keyframes codeRain {
+      0% { background-position: 0 -40px, 0 -20px; }
+      100% { background-position: 0 40px, 0 20px; }
+    }
+
+    /* API Automation — flow lines */
+
+    .build-card-api .build-decor::before {
+      content: "";
+      position: absolute;
+      left: -40px;
+      right: -40px;
+      top: 28px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0.7;
+    }
+
+    .build-card-api .build-decor::after {
+      content: "";
+      position: absolute;
+      top: 24px;
+      left: -20px;
+      width: 22px;
+      height: 10px;
+      border-radius: 999px;
+      background: radial-gradient(circle, #f9fafb, var(--accent));
+      box-shadow: 0 0 12px var(--accent-soft);
+      animation: apiDotMove 3s linear infinite;
+    }
+
+    @keyframes apiDotMove {
+      0% { transform: translateX(0); opacity: 0; }
+      15% { opacity: 1; }
+      80% { transform: translateX(140px); opacity: 1; }
+      100% { transform: translateX(180px); opacity: 0; }
+    }
+
+    /* TTS/STT + Cloning — wave bars */
+
+    .build-card-tts .build-decor {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 4px;
+      position: absolute;
+      left: 50%;
+      bottom: 12px;
+      transform: translateX(-50%);
+      width: 70%;
+      height: 24px;
+      opacity: 0.9;
+    }
+
+    .build-card-tts .wave-bar {
+      width: 3px;
+      border-radius: 999px;
+      background: linear-gradient(to top, var(--accent-strong), var(--accent));
+      box-shadow: 0 0 10px var(--accent-soft);
+      transform-origin: bottom center;
+      animation: waveBar 1.4s ease-in-out infinite;
+    }
+
+    .build-card-tts .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+    .build-card-tts .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+    .build-card-tts .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+    .build-card-tts .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+
+    @keyframes waveBar {
+      0%,100% { transform: scaleY(0.3); }
+      50% { transform: scaleY(1); }
+    }
+
+    /* GLASS CARDS / AUTOMATIONS SECTION */
 
     .features-grid {
       display: grid;
@@ -1034,6 +1393,9 @@
       .stats-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
+      .build-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
     @media (max-width: 840px) {
@@ -1043,6 +1405,13 @@
     }
 
     @media (max-width: 768px) {
+      body {
+        cursor: default;
+      }
+      .cursor-dot,
+      .cursor-ring {
+        display: none;
+      }
       .nav-center {
         display: none;
       }
@@ -1058,7 +1427,8 @@
 
     @media (max-width: 640px) {
       .features-grid,
-      .stats-grid {
+      .stats-grid,
+      .build-grid {
         grid-template-columns: minmax(0, 1fr);
       }
       .cta-box {
@@ -1100,6 +1470,7 @@
           <div class="nav-center">
             <div class="nav-links">
               <a href="#hero">Overview</a>
+              <a href="#build">What I build</a>
               <a href="#automations">Automations</a>
               <a href="#stats">Stats</a>
               <a href="#cta">Contact</a>
@@ -1107,11 +1478,11 @@
           </div>
 
           <div class="nav-right">
-            <div class="theme-toggle-shell" id="theme-toggle">
+            <div class="theme-toggle-shell hover-target" id="theme-toggle">
               <div class="theme-toggle-knob"></div>
             </div>
             <a href="mailto:ankypanicker@gmail.com">
-              <button class="btn btn-primary">Contact me</button>
+              <button class="btn btn-primary hover-target">Contact me</button>
             </a>
           </div>
         </nav>
@@ -1130,7 +1501,9 @@
               </div>
 
               <h1 class="hero-title">
-                I build <span>bold automation systems</span> —<br />
+                I build
+                <span class="glitch" data-text="bold automation systems">bold automation systems</span>
+                —<br />
                 and <span>beautiful interfaces</span> that make them unforgettable.
               </h1>
 
@@ -1141,8 +1514,8 @@
               </p>
 
               <p class="hero-subtitle">
-                But here’s what makes my work different — I combine automation with
-                <strong>premium UI/UX</strong>, <strong>sleek GUI design</strong>, and
+                What makes my work different? I combine automation with
+                <strong>premium UI/UX</strong>, <strong>sleek GUIs</strong>, and
                 <strong>next-gen HTML front-ends</strong> that feel like a futuristic OS:
                 matte-black surfaces, frosted glass panels, neon edges, droplets and soft motion.
               </p>
@@ -1153,11 +1526,11 @@
               </p>
 
               <div class="hero-actions">
-                <a href="#automations">
-                  <button class="btn btn-primary">Explore my automations</button>
+                <a href="#build">
+                  <button class="btn btn-primary hover-target">See what I build</button>
                 </a>
                 <a href="https://github.com/ankypanicker" target="_blank" rel="noreferrer">
-                  <button class="btn btn-ghost">View my code on GitHub</button>
+                  <button class="btn btn-ghost hover-target">View my code on GitHub</button>
                 </a>
               </div>
 
@@ -1202,7 +1575,7 @@
                 </div>
               </div>
 
-              <!-- CLI CARD MOVED BELOW HUD -->
+              <!-- CLI CARD under HUD -->
               <div class="hero-cli-chip reveal">
                 <div class="hero-cli-title">CLI · Runtime</div>
                 <div class="hero-cli-main">Dark terminal, frosted UI, clean logs.</div>
@@ -1215,21 +1588,117 @@
           </div>
         </div>
       </section>
+
       <!-- STACK STRIP -->
       <section>
         <div class="container reveal">
           <div class="stack-strip">
             <div class="stack-label">Stack I love to automate</div>
             <div class="stack-tags">
-              <span class="stack-tag">Python</span>
-              <span class="stack-tag">XTTS · TTS</span>
-              <span class="stack-tag">Whisper STT</span>
-              <span class="stack-tag">FFmpeg</span>
-              <span class="stack-tag">CLI tools</span>
-              <span class="stack-tag">APIs</span>
-              <span class="stack-tag">YouTube flows</span>
-              <span class="stack-tag">Automation scripts</span>
+              <span class="stack-tag hover-target">Python</span>
+              <span class="stack-tag hover-target">XTTS · TTS</span>
+              <span class="stack-tag hover-target">Whisper STT</span>
+              <span class="stack-tag hover-target">FFmpeg</span>
+              <span class="stack-tag hover-target">CLI tools</span>
+              <span class="stack-tag hover-target">APIs</span>
+              <span class="stack-tag hover-target">YouTube flows</span>
+              <span class="stack-tag hover-target">Automation scripts</span>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WHAT I BUILD -->
+      <section class="build-section" id="build">
+        <div class="container">
+          <div class="section-header reveal">
+            <div class="eyebrow">What I build</div>
+            <h2 class="section-title">
+              Automation systems that <span>feel like products</span>.
+            </h2>
+            <p class="section-subtitle">
+              Each block below is more than a script — it’s a full pipeline with structure, safeguards,
+              and a UI that makes people want to use it.
+            </p>
+          </div>
+
+          <div class="build-grid">
+            <!-- Voice Automation -->
+            <article class="build-card build-card-voice reveal hover-target">
+              <div class="build-decor"></div>
+              <div class="build-icon">🔊</div>
+              <h3 class="build-title">Voice Automation</h3>
+              <p class="build-body">
+                I design voice systems around XTTS: cloning, voice style presets, chunked generation,
+                echo/volume tuning and automatic file stitching for long-form content.
+              </p>
+              <div class="build-tag">Mic pulse · Smart wave control</div>
+            </article>
+
+            <!-- YouTube Automation -->
+            <article class="build-card build-card-yt reveal hover-target">
+              <div class="build-decor"></div>
+              <div class="build-icon">🎬</div>
+              <h3 class="build-title">YouTube Automation</h3>
+              <p class="build-body">
+                Script → voice → subtitles → video. I wire FFmpeg, TTS and visuals into faceless video
+                engines that publish consistent content without manual editing.
+              </p>
+              <div class="build-tag">Timeline · Auto-cut simulation</div>
+            </article>
+
+            <!-- Code Automation -->
+            <article class="build-card build-card-code reveal hover-target">
+              <div class="build-decor"></div>
+              <div class="build-icon">🤖</div>
+              <h3 class="build-title">Code Automation</h3>
+              <p class="build-body">
+                From file renamers to batch processors and log parsers — I build CLIs with clean output,
+                config-based behavior and safe defaults you can trust.
+              </p>
+              <div class="build-tag">Matrix-style code rain</div>
+            </article>
+
+            <!-- API Automation -->
+            <article class="build-card build-card-api reveal hover-target">
+              <div class="build-decor"></div>
+              <div class="build-icon">🧪</div>
+              <h3 class="build-title">API Pipelines</h3>
+              <p class="build-body">
+                Multiple APIs wired together: auth, retries, rate limiting, caching and clear error
+                surfaces. Built so data feels like it flows on rails.
+              </p>
+              <div class="build-tag">Pipes · Flowing data dots</div>
+            </article>
+
+            <!-- TTS/STT + Cloning -->
+            <article class="build-card build-card-tts reveal hover-target">
+              <div class="build-decor">
+                <div class="wave-bar" style="height: 8px;"></div>
+                <div class="wave-bar" style="height: 14px;"></div>
+                <div class="wave-bar" style="height: 18px;"></div>
+                <div class="wave-bar" style="height: 12px;"></div>
+                <div class="wave-bar" style="height: 16px;"></div>
+              </div>
+              <div class="build-icon">🎤</div>
+              <h3 class="build-title">TTS · STT · Cloning</h3>
+              <p class="build-body">
+                Clean text in, clean audio out — with splitting, punctuation fixes, language choices,
+                volume balancing and subtitle-ready transcripts ready to go.
+              </p>
+              <div class="build-tag">Soft wave motion · Loop</div>
+            </article>
+
+            <!-- UI + Frontend Focus -->
+            <article class="build-card reveal hover-target">
+              <div class="build-icon">💻</div>
+              <h3 class="build-title">UI/UX + Frontend Shells</h3>
+              <p class="build-body">
+                All of this automation is wrapped in matte-black glass UIs, HTML/CSS/JS frontends,
+                and “OS-style” dashboards so it feels like a real product, not a script.
+              </p>
+              <div class="build-tag">Frosted glass · Neon highlights</div>
+            </article>
           </div>
         </div>
       </section>
@@ -1250,7 +1719,7 @@
 
           <div class="features-grid">
             <!-- CARD 1 -->
-            <article class="glass-card reveal">
+            <article class="glass-card reveal hover-target">
               <div class="glass-blob blob-a"></div>
               <div class="glass-blob blob-b"></div>
               <div class="glass-blob blob-c"></div>
@@ -1268,7 +1737,7 @@
             </article>
 
             <!-- CARD 2 -->
-            <article class="glass-card reveal">
+            <article class="glass-card reveal hover-target">
               <div class="glass-blob blob-a"></div>
               <div class="glass-blob blob-b"></div>
               <div class="glass-blob blob-c"></div>
@@ -1285,7 +1754,7 @@
             </article>
 
             <!-- CARD 3 -->
-            <article class="glass-card reveal">
+            <article class="glass-card reveal hover-target">
               <div class="glass-blob blob-a"></div>
               <div class="glass-blob blob-b"></div>
               <div class="glass-blob blob-c"></div>
@@ -1302,7 +1771,7 @@
             </article>
 
             <!-- CARD 4 -->
-            <article class="glass-card reveal">
+            <article class="glass-card reveal hover-target">
               <div class="glass-blob blob-a"></div>
               <div class="glass-blob blob-b"></div>
               <div class="glass-blob blob-c"></div>
@@ -1319,7 +1788,7 @@
             </article>
 
             <!-- CARD 5 -->
-            <article class="glass-card reveal">
+            <article class="glass-card reveal hover-target">
               <div class="glass-blob blob-a"></div>
               <div class="glass-blob blob-b"></div>
               <div class="glass-blob blob-c"></div>
@@ -1336,7 +1805,7 @@
             </article>
 
             <!-- CARD 6 -->
-            <article class="glass-card reveal">
+            <article class="glass-card reveal hover-target">
               <div class="glass-blob blob-a"></div>
               <div class="glass-blob blob-b"></div>
               <div class="glass-blob blob-c"></div>
@@ -1396,6 +1865,7 @@
           </div>
         </div>
       </section>
+
       <!-- CTA + CONTACT -->
       <section class="cta-section" id="cta">
         <div class="container">
@@ -1406,7 +1876,7 @@
               rename, wait and repeat. I’ll help you turn that into a pipeline instead.
             </p>
             <a href="mailto:ankypanicker@gmail.com">
-              <button class="btn btn-primary">Email your workflow</button>
+              <button class="btn btn-primary hover-target">Email your workflow</button>
             </a>
 
             <div class="contact-card">
@@ -1456,30 +1926,41 @@
     let dotX = ringX;
     let dotY = ringY;
 
-    document.addEventListener("mousemove", (e) => {
-      dotX = e.clientX;
-      dotY = e.clientY;
-      dot.style.left = dotX + "px";
-      dot.style.top = dotY + "px";
-    });
+    if (dot && ring) {
+      document.addEventListener("mousemove", (e) => {
+        dotX = e.clientX;
+        dotY = e.clientY;
+        dot.style.left = dotX + "px";
+        dot.style.top = dotY + "px";
+      });
 
-    function animateRing() {
-      ringX += (dotX - ringX) * 0.18;
-      ringY += (dotY - ringY) * 0.18;
-      ring.style.left = ringX + "px";
-      ring.style.top = ringY + "px";
-      requestAnimationFrame(animateRing);
+      function animateRing() {
+        ringX += (dotX - ringX) * 0.18;
+        ringY += (dotY - ringY) * 0.18;
+        ring.style.left = ringX + "px";
+        ring.style.top = ringY + "px";
+        requestAnimationFrame(animateRing);
+      }
+      animateRing();
+
+      document.addEventListener("mousedown", () => {
+        ring.classList.add("cursor-hover");
+      });
+      document.addEventListener("mouseup", () => {
+        ring.classList.remove("cursor-hover");
+      });
+
+      // Make ring react to hover targets
+      const hoverTargets = document.querySelectorAll(".hover-target, a, button");
+      hoverTargets.forEach((el) => {
+        el.addEventListener("mouseenter", () => {
+          ring.classList.add("cursor-hover");
+        });
+        el.addEventListener("mouseleave", () => {
+          ring.classList.remove("cursor-hover");
+        });
+      });
     }
-    animateRing();
-
-    document.addEventListener("mousedown", () => {
-      ring.style.transform = "translate(-50%, -50%) scale(0.65)";
-      ring.style.opacity = "0.95";
-    });
-    document.addEventListener("mouseup", () => {
-      ring.style.transform = "translate(-50%, -50%) scale(1)";
-      ring.style.opacity = "0.8";
-    });
 
     // SCROLL REVEAL
     const reveals = document.querySelectorAll(".reveal");
