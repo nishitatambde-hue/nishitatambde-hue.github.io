@@ -1808,49 +1808,48 @@
       }, 4000);
     });
 
-    // MATRIX CODE RAIN on hover
+    // MATRIX CODE RAIN — always running (no hover needed)
     document.querySelectorAll(".matrix-canvas").forEach((canvas) => {
-      const ctx = canvas.getContext("2d");
-      canvas.width = canvas.clientWidth;
-      canvas.height = canvas.clientHeight;
+        const ctx = canvas.getContext("2d");
 
-      const chars = "01";
-      const columns = Math.floor(canvas.width / 10);
-      const drops = Array(columns).fill(1);
-      let animating = false;
-
-      function drawMatrix() {
-        if (!animating) return;
-        ctx.fillStyle = "rgba(0,0,0,0.1)";
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-
-        ctx.fillStyle = getComputedStyle(document.body).getPropertyValue("--accent").trim();
-        ctx.font = "16px monospace";
-
-        drops.forEach((y, i) => {
-          const text = chars[Math.floor(Math.random() * chars.length)];
-          ctx.fillText(text, i * 10, y * 18);
-
-          if (y * 18 > canvas.height && Math.random() > 0.97) {
-            drops[i] = 0;
-          }
-          drops[i]++;
-        });
-
-        requestAnimationFrame(drawMatrix);
-      }
-
-      const parent = canvas.parentElement;
-      parent.addEventListener("mouseenter", () => {
-        if (!animating) {
-          animating = true;
-          drawMatrix();
+        function resize() {
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
         }
-      });
-      parent.addEventListener("mouseleave", () => {
-        animating = false;
-      });
+        resize();
+        window.addEventListener("resize", resize);
+
+        const chars = "01";
+        let columns = Math.floor(canvas.width / 12);
+        let drops = Array(columns).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0,0,0,0.12)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle =
+                getComputedStyle(document.body).getPropertyValue("--accent").trim() || "#22d3ee";
+            ctx.font = "16px monospace";
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                const x = i * 12;
+                const y = drops[i] * 18;
+
+                ctx.fillText(text, x, y);
+
+                // Reset drop randomly when below screen
+                if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+
+                drops[i]++;
+            }
+
+            requestAnimationFrame(drawMatrix);
+        }
+
+        drawMatrix();
     });
+
 
     // API PIPES
     document.querySelectorAll(".pipe-net").forEach((svg) => {
