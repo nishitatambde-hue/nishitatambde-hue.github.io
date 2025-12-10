@@ -392,20 +392,7 @@
       position: relative;
     }
 
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        to right,
-        rgba(148,163,184,0.05) 0 3px,
-        transparent 3px 6px
-      );
-      z-index: 1;
-      opacity: 0.35;
-      pointer-events: none;
-      animation: heroWave 6s ease-in-out infinite;
-    }
+
 
     @keyframes heroWave {
       0%,100% { transform: translateX(0); }
@@ -437,14 +424,7 @@
       position: relative;
     }
 
-    .hero-pill::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.16), transparent);
-      transform: translateX(-120%);
-      animation: pillSweep 4s ease-in-out infinite;
-    }
+
 
     @keyframes pillSweep {
       0% { transform: translateX(-120%); }
@@ -593,21 +573,7 @@
       overflow: hidden;
     }
 
-    .holo-reflect::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        125deg,
-        transparent 0%,
-        rgba(255,255,255,0.06) 45%,
-        rgba(255,255,255,0.15) 50%,
-        transparent 55%
-      );
-      transform: translateX(-120%);
-      animation: holoSwipe 6s ease-in-out infinite;
-      pointer-events: none;
-    }
+
 
     @keyframes holoSwipe {
       0%   { transform: translateX(-120%); }
@@ -615,21 +581,6 @@
       100% { transform: translateX(220%); }
     }
 
-    .scan-lines::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,0.03) 0px,
-        rgba(255,255,255,0.03) 1px,
-        transparent 1px,
-        transparent 3px
-      );
-      animation: scanMove 9s linear infinite;
-      z-index: 2;
-      pointer-events: none;
-    }
 
     @keyframes scanMove {
       0% { transform: translateY(0px); }
